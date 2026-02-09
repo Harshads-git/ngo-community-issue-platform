@@ -1,0 +1,20 @@
+ngo-community-issue-platform/
+│
+├── docs/
+│   ├── SRS.pdf
+│   ├── architecture.md
+│   ├── api-spec.md
+│
+├── frontend/
+│
+├── backend/
+│
+├── ai-service/
+│
+├── devops/
+│   ├── docker/
+│   ├── kubernetes/
+│   └── ci-cd/
+│
+├── .gitignore
+├── README.md
