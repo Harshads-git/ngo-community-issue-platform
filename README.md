@@ -15,17 +15,32 @@ A web-based platform that enables citizens to report civic issues, NGOs to verif
 - Partner Organization
 - System Administrator
 
-## 🛠️ Tech Stack (Planned)
-- Frontend: TBD
-- Backend: TBD
-- Database: TBD
-- AI Module: TBD
-- Cloud & DevOps: TBD
+## 🛠️ Tech Stack
+- **Frontend**: TBD (React/Next.js recommended)
+- **Backend**: Node.js, Express.js (REST API)
+- **Database**: MongoDB Atlas (Mongoose ODM)
+- **Authentication**: JWT, bcryptjs
+- **File Storage**: Local Multer Integration (Image uploads)
+- **AI Module**: TBD (Python recommended)
+- **Cloud & DevOps**: TBD
 
 ## 📄 Documentation
-- Software Requirements Specification (SRS)
-- System Architecture (Coming Soon)
-- API Documentation (Coming Soon)
+- [x] Software Requirements Specification (SRS)
+- [x] Backend Schema Models (User & Issue)
+- [x] Backend API Routes
+- [ ] System Architecture (Coming Soon)
+- [ ] AI Integration Spec (Coming Soon)
+
+## 🚀 How to run the Backend
+1. `cd backend`
+2. Run `npm install`
+3. Create a `.env` file in the `backend` directory based on the configuration needed.
+4. Run `npm run dev` to start the nodemon server on port 5000.
 
 ## 📌 Project Status
-🚧 Initial setup and planning phase
+✅ Backend Auth Flow Complete (Register, Login, Role-Based Access)
+✅ User & Issue Database Schemas Created
+✅ Advanced Issue Query API (Filter, Sort, Paginate)
+✅ Civic Image Upload API Working
+🚧 Frontend currently in development
+🚧 AI Classification Module planning phase
