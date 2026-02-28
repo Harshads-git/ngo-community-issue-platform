@@ -1,5 +1,6 @@
 const Issue = require('../models/Issue');
 const { analyzeIssueText } = require('../utils/aiClient');
+const sendEmail = require('../utils/sendEmail');
 
 // @desc    Get all issues
 // @route   GET /api/issues
@@ -155,10 +156,24 @@ exports.updateIssue = async (req, res) => {
             return res.status(401).json({ success: false, message: `User ${req.user.id} is not authorized to update this issue` });
         }
 
+        // Capture the old status BEFORE updating
+        const oldStatus = issue.status;
+
         issue = await Issue.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
-        });
+        }).populate({ path: 'user', select: 'name email' }); // Populate user to get their email address
+
+        // Send Email Notification if the status actually changed
+        if (req.body.status && req.body.status !== oldStatus) {
+            const emailMessage = `Hello ${issue.user.name},\n\nWe wanted to let you know that the status of your reported issue "${issue.title}" has been updated to: ${issue.status.toUpperCase()}.\n\nThank you for helping the community!\n\nThe NGO Issue Platform Team`;
+
+            await sendEmail({
+                email: issue.user.email,
+                subject: `Issue Status Update: ${issue.title}`,
+                message: emailMessage
+            });
+        }
 
         res.status(200).json({
             success: true,
