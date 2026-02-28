@@ -5,13 +5,18 @@ const {
     createIssue,
     updateIssue,
     deleteIssue,
-    uploadIssuePhoto
+    uploadIssuePhoto,
+    getIssueMetrics
 } = require('../controllers/issue');
 
 const router = express.Router();
 
 const { protect, authorize } = require('../middleware/auth');
 const upload = require('../middleware/upload');
+
+router
+    .route('/metrics/all')
+    .get(protect, authorize('ngo', 'admin'), getIssueMetrics);
 
 router
     .route('/')

@@ -1,4 +1,5 @@
 const Issue = require('../models/Issue');
+const { analyzeIssueText } = require('../utils/aiClient');
 
 // @desc    Get all issues
 // @route   GET /api/issues
@@ -113,7 +114,19 @@ exports.createIssue = async (req, res) => {
         // Add user to req.body
         req.body.user = req.user.id;
 
-        // TODO: Connect AI module classification here before saving
+        // --- AI MICROSERVICE INTEGRATION ---
+        // Pass the user's description (and title) to the AI service
+        const issueText = `${req.body.title}. ${req.body.description}`;
+        const aiAnalysis = await analyzeIssueText(issueText);
+
+        // Attach AI data to the issue before saving it into MongoDB
+        req.body.category = aiAnalysis.predictedCategory || req.body.category;
+        req.body.severity = aiAnalysis.severity || req.body.severity;
+        req.body.aiClassification = {
+            predictedCategory: aiAnalysis.predictedCategory,
+            confidenceScore: aiAnalysis.confidenceScore,
+            isFlagged: aiAnalysis.confidenceScore < 0.50 // Flag for human review if AI is unsure
+        };
 
         const issue = await Issue.create(req.body);
 
@@ -220,6 +233,46 @@ exports.uploadIssuePhoto = async (req, res) => {
         res.status(200).json({
             success: true,
             data: issue.images
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Get issue metrics/statistics
+// @route   GET /api/issues/metrics/all
+// @access  Private (NGO & Admin)
+exports.getIssueMetrics = async (req, res) => {
+    try {
+        const totalIssues = await Issue.countDocuments();
+        const resolvedIssues = await Issue.countDocuments({ status: 'resolved' });
+        const pendingIssues = await Issue.countDocuments({ status: { $ne: 'resolved' } });
+
+        const issuesByCategory = await Issue.aggregate([
+            { $group: { _id: '$category', count: { $sum: 1 } } }
+        ]);
+
+        const issuesByStatus = await Issue.aggregate([
+            { $group: { _id: '$status', count: { $sum: 1 } } }
+        ]);
+
+        const issuesBySeverity = await Issue.aggregate([
+            { $group: { _id: '$severity', count: { $sum: 1 } } }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                summary: {
+                    total: totalIssues,
+                    resolved: resolvedIssues,
+                    pending: pendingIssues,
+                    resolutionRate: totalIssues > 0 ? ((resolvedIssues / totalIssues) * 100).toFixed(2) + '%' : '0%'
+                },
+                byCategory: issuesByCategory,
+                byStatus: issuesByStatus,
+                bySeverity: issuesBySeverity
+            }
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
