@@ -6,7 +6,8 @@ const {
     updateIssue,
     deleteIssue,
     uploadIssuePhoto,
-    getIssueMetrics
+    getIssueMetrics,
+    upvoteIssue
 } = require('../controllers/issue');
 
 const router = express.Router();
@@ -28,6 +29,10 @@ router
     .get(getIssue)
     .put(protect, authorize('citizen', 'ngo', 'admin'), updateIssue)
     .delete(protect, authorize('citizen', 'admin'), deleteIssue);
+
+router
+    .route('/:id/upvote')
+    .put(protect, upvoteIssue);
 
 router
     .route('/:id/photo')

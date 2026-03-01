@@ -293,3 +293,31 @@ exports.getIssueMetrics = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// @desc    Upvote an issue
+// @route   PUT /api/issues/:id/upvote
+// @access  Private (Registered users only)
+exports.upvoteIssue = async (req, res) => {
+    try {
+        const issue = await Issue.findById(req.params.id);
+
+        if (!issue) {
+            return res.status(404).json({ success: false, message: `Issue not found with id of ${req.params.id}` });
+        }
+
+        // We increment the upvotes by 1
+        // (In a more complex app, we would track WHICH user upvoted to prevent double-voting)
+        issue.upvotes += 1;
+        await issue.save();
+
+        res.status(200).json({
+            success: true,
+            data: {
+                id: issue._id,
+                upvotes: issue.upvotes
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
