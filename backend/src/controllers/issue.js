@@ -305,15 +305,24 @@ exports.upvoteIssue = async (req, res) => {
             return res.status(404).json({ success: false, message: `Issue not found with id of ${req.params.id}` });
         }
 
-        // We increment the upvotes by 1
-        // (In a more complex app, we would track WHICH user upvoted to prevent double-voting)
-        issue.upvotes += 1;
+        // Check if user has already upvoted
+        if (issue.upvotes.includes(req.user.id)) {
+            // Remove upvote (toggle effect)
+            issue.upvotes = issue.upvotes.filter(
+                (userId) => userId.toString() !== req.user.id
+            );
+        } else {
+            // Add upvote
+            issue.upvotes.push(req.user.id);
+        }
+
         await issue.save();
 
         res.status(200).json({
             success: true,
             data: {
                 id: issue._id,
+                upvoteCount: issue.upvotes.length,
                 upvotes: issue.upvotes
             }
         });

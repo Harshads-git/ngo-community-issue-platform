@@ -1,10 +1,17 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+
+// Ensure upload directory exists
+const uploadPath = process.env.UPLOAD_PATH || './public/uploads';
+if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+}
 
 // Configure local storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, process.env.UPLOAD_PATH);
+        cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
         // Generate a unique file name: photo_userId_timestamp.ext
