@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Dashboard - CommunityConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../../index.html"><i class="bi bi-hand-thumbs-up-fill"></i> CommunityConnect</a>
+            <div class="navbar-nav ms-auto">
+                <span class="nav-link text-white"><i class="bi bi-building"></i> Sarah - Green City NGO</span>
+                <a class="nav-link" href="../public/login.html">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid section-padding">
+        <div class="row">
+            <div class="col-lg-2 mb-4">
+                <div class="dashboard-sidebar">
+                    <div class="nav flex-column">
+                        <a class="nav-link active" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        <a class="nav-link" href="#pending"><i class="bi bi-hourglass"></i> Pending</a>
+                        <a class="nav-link" href="#verified"><i class="bi bi-check-circle"></i> Verified</a>
+                        <a class="nav-link" href="#analytics"><i class="bi bi-graph-up"></i> Analytics</a>
+                        <a class="nav-link" href="#"><i class="bi bi-people"></i> Team</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-10">
+                <h2 class="mb-4">NGO Coordinator Dashboard</h2>
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning bg-opacity-10"><i class="bi bi-exclamation-circle text-warning"></i></div>
+                            <div class="stat-value">24</div>
+                            <div class="stat-label">Pending Review</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary bg-opacity-10"><i class="bi bi-check-circle text-primary"></i></div>
+                            <div class="stat-value">67</div>
+                            <div class="stat-label">Verified</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info bg-opacity-10"><i class="bi bi-arrow-repeat text-info"></i></div>
+                            <div class="stat-value">42</div>
+                            <div class="stat-label">In Progress</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success bg-opacity-10"><i class="bi bi-trophy text-success"></i></div>
+                            <div class="stat-value">156</div>
+                            <div class="stat-label">Resolved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-custom mb-4" id="pending">
+                    <div class="card-header"><h5 class="mb-0"><i class="bi bi-hourglass-split me-2"></i>Pending Issues - AI Classification</h5></div>
+                    <div class="card-body">
+                        <div class="card border-start border-danger border-4 mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <h6 class="fw-bold">#2502 - Water Pipeline Burst</h6>
+                                        <p class="text-muted">Major water pipeline burst on Oak Street causing flooding and water disruption to 200+ homes.</p>
+                                        <div class="mb-2">
+                                            <span class="badge bg-info me-2">Oak Street, Zone 4</span>
+                                            <span class="badge bg-secondary">2 hours ago</span>
+                                        </div>
+                                        <div class="alert alert-info mb-0">
+                                            <strong><i class="bi bi-cpu me-2"></i>AI Classification:</strong>
+                                            <div class="mt-2">
+                                                <strong>Category:</strong> Infrastructure - Water Supply<br>
+                                                <strong>Priority:</strong> <span class="badge bg-danger">Critical</span><br>
+                                                <strong>Impact:</strong> 200+ households<br>
+                                                <strong>Recommended Action:</strong> Immediate response required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-2">
+                                            <label class="form-label fw-semibold">Set Priority</label>
+                                            <select class="form-select">
+                                                <option selected>Critical</option>
+                                                <option>High</option>
+                                                <option>Medium</option>
+                                                <option>Low</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fw-semibold">Assign Volunteer</label>
+                                            <select class="form-select mb-2">
+                                                <option>Select Volunteer</option>
+                                                <option>Mike Johnson</option>
+                                                <option>Emma Davis</option>
+                                                <option>Chris Lee</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Partner Organization</label>
+                                            <select class="form-select">
+                                                <option>Select Partner</option>
+                                                <option>City Water Works</option>
+                                                <option>Quick Fix Solutions</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-success"><i class="bi bi-check-circle me-2"></i>Approve & Assign</button>
+                                            <button class="btn btn-danger"><i class="bi bi-x-circle me-2"></i>Reject</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card border-start border-warning border-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <h6 class="fw-bold">#2501 - Illegal Construction Activity</h6>
+                                        <p class="text-muted">Unauthorized construction blocking public pathway in residential area.</p>
+                                        <div class="mb-2">
+                                            <span class="badge bg-info me-2">Maple Avenue</span>
+                                            <span class="badge bg-secondary">5 hours ago</span>
+                                        </div>
+                                        <div class="alert alert-info mb-0">
+                                            <strong><i class="bi bi-cpu me-2"></i>AI Classification:</strong>
+                                            <div class="mt-2">
+                                                <strong>Category:</strong> Public Safety<br>
+                                                <strong>Priority:</strong> <span class="badge bg-warning">High</span><br>
+                                                <strong>Impact:</strong> 50+ residents<br>
+                                                <strong>Recommended:</strong> Coordinate with authorities
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-2">
+                                            <label class="form-label fw-semibold">Set Priority</label>
+                                            <select class="form-select">
+                                                <option>Critical</option>
+                                                <option selected>High</option>
+                                                <option>Medium</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fw-semibold">Assign Volunteer</label>
+                                            <select class="form-select mb-2">
+                                                <option>Select Volunteer</option>
+                                                <option>Mike Johnson</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Partner Organization</label>
+                                            <select class="form-select">
+                                                <option>Municipal Authority</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-success">Approve & Assign</button>
+                                            <button class="btn btn-danger">Reject</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-custom mb-4" id="verified">
+                    <div class="card-header"><h5 class="mb-0">Verified & Assigned Issues</h5></div>
+                    <div class="card-body p-0">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Assigned To</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#2498</td>
+                                    <td>Road Pothole Repair</td>
+                                    <td>Mike Johnson / City Works</td>
+                                    <td><span class="badge badge-in-progress">In Progress</span></td>
+                                    <td><span class="badge bg-danger">High</span></td>
+                                    <td><button class="btn btn-sm btn-outline-primary">Monitor</button></td>
+                                </tr>
+                                <tr>
+                                    <td>#2495</td>
+                                    <td>Street Light Repair</td>
+                                    <td>Emma Davis</td>
+                                    <td><span class="badge badge-assigned">Assigned</span></td>
+                                    <td><span class="badge bg-warning">Medium</span></td>
+                                    <td><button class="btn btn-sm btn-outline-primary">Monitor</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card card-custom" id="analytics">
+                    <div class="card-header"><h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Reports & Analytics</h5></div>
+                    <div class="card-body">
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="fw-bold">Resolution Rate</h6>
+                                        <div class="display-4 text-primary">87%</div>
+                                        <p class="text-muted mb-0">This Month</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="fw-bold">Avg Resolution Time</h6>
+                                        <div class="display-4 text-success">4.2</div>
+                                        <p class="text-muted mb-0">Days</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="fw-bold mb-3">Issues by Category</h6>
+                        <div class="progress mb-2" style="height: 25px;">
+                            <div class="progress-bar bg-primary" style="width: 35%">Infrastructure 35%</div>
+                        </div>
+                        <div class="progress mb-2" style="height: 25px;">
+                            <div class="progress-bar bg-success" style="width: 25%">Sanitation 25%</div>
+                        </div>
+                        <div class="progress mb-2" style="height: 25px;">
+                            <div class="progress-bar bg-info" style="width: 20%">Environment 20%</div>
+                        </div>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-warning" style="width: 20%">Public Safety 20%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

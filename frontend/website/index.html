@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommunityConnect - NGO Issue Reporting Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-hand-thumbs-up-fill"></i> CommunityConnect
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/public/issues.html">View Issues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/public/resolved.html">Success Stories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light ms-2" href="pages/public/login.html">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-light ms-2" href="pages/public/register.html">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="display-3 fw-bold mb-4">Empowering Communities Through Collective Action</h1>
+                    <p class="lead mb-4">Report community issues, track progress, and witness real change powered by AI-driven coordination between citizens, NGOs, and volunteers.</p>
+                    <div class="d-flex gap-3">
+                        <a href="pages/public/register.html" class="btn btn-light btn-lg px-4">Report an Issue</a>
+                        <a href="#how-it-works" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+                    </div>
+                    <div class="mt-5">
+                        <div class="row g-4">
+                            <div class="col-4">
+                                <h3 class="fw-bold mb-0">2,847</h3>
+                                <small class="opacity-75">Issues Resolved</small>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="fw-bold mb-0">156</h3>
+                                <small class="opacity-75">Active NGOs</small>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="fw-bold mb-0">5,432</h3>
+                                <small class="opacity-75">Volunteers</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%234a90d9' width='400' height='400' rx='20'/%3E%3Ctext x='50%25' y='50%25' font-size='80' text-anchor='middle' dy='.3em' fill='white'%3E🤝%3C/text%3E%3C/svg%3E" alt="Community" class="img-fluid rounded shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section-padding bg-white">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Simple, transparent, and effective community issue resolution</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card card-custom h-100 text-center p-4">
+                        <div class="mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-4">
+                                <i class="bi bi-pencil-square fs-1 text-primary"></i>
+                            </div>
+                        </div>
+                        <h4>1. Report Issue</h4>
+                        <p class="text-muted">Citizens report community issues with photos and location details</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom h-100 text-center p-4">
+                        <div class="mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-4">
+                                <i class="bi bi-cpu fs-1 text-primary"></i>
+                            </div>
+                        </div>
+                        <h4>2. AI Classification</h4>
+                        <p class="text-muted">AI categorizes and prioritizes issues for efficient handling</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom h-100 text-center p-4">
+                        <div class="mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-4">
+                                <i class="bi bi-people-fill fs-1 text-primary"></i>
+                            </div>
+                        </div>
+                        <h4>3. Assignment</h4>
+                        <p class="text-muted">NGOs assign tasks to volunteers and partner organizations</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom h-100 text-center p-4">
+                        <div class="mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-4">
+                                <i class="bi bi-check-circle-fill fs-1 text-primary"></i>
+                            </div>
+                        </div>
+                        <h4>4. Resolution</h4>
+                        <p class="text-muted">Track progress and celebrate successful community improvements</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section-padding" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon mx-auto bg-primary bg-opacity-10">
+                            <i class="bi bi-exclamation-triangle text-primary"></i>
+                        </div>
+                        <div class="stat-value">2,847</div>
+                        <div class="stat-label">Issues Resolved</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon mx-auto bg-success bg-opacity-10">
+                            <i class="bi bi-building text-success"></i>
+                        </div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Partner NGOs</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon mx-auto bg-warning bg-opacity-10">
+                            <i class="bi bi-person-hearts text-warning"></i>
+                        </div>
+                        <div class="stat-value">5,432</div>
+                        <div class="stat-label">Active Volunteers</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon mx-auto bg-danger bg-opacity-10">
+                            <i class="bi bi-heart-fill text-danger"></i>
+                        </div>
+                        <div class="stat-value">89</div>
+                        <div class="stat-label">Generous Donors</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-padding bg-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="section-title">Building Stronger Communities Together</h2>
+                    <p class="lead text-muted mb-4">CommunityConnect leverages AI technology to bridge the gap between citizens and change-makers.</p>
+                    <div class="mb-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5>AI-Powered Classification</h5>
+                                <p class="text-muted">Intelligent categorization ensures issues reach the right experts quickly.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5>Real-Time Tracking</h5>
+                                <p class="text-muted">Stay informed with live updates on issue resolution progress.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5>Transparent Impact</h5>
+                                <p class="text-muted">Comprehensive reporting shows the real difference your community makes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="card card-custom p-3 text-center">
+                                <i class="bi bi-shield-check fs-1 text-primary mb-2"></i>
+                                <h6>Verified NGOs</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card card-custom p-3 text-center">
+                                <i class="bi bi-geo-alt-fill fs-1 text-primary mb-2"></i>
+                                <h6>Location Tracking</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card card-custom p-3 text-center">
+                                <i class="bi bi-graph-up fs-1 text-primary mb-2"></i>
+                                <h6>Impact Analytics</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card card-custom p-3 text-center">
+                                <i class="bi bi-chat-dots-fill fs-1 text-primary mb-2"></i>
+                                <h6>Community Updates</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section-padding" style="background: linear-gradient(135deg, #1e4d7b 0%, #2563a8 100%);">
+        <div class="container text-center text-white">
+            <h2 class="display-4 fw-bold mb-4">Ready to Make a Difference?</h2>
+            <p class="lead mb-5">Join thousands of citizens, volunteers, and organizations creating positive change</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="pages/public/register.html" class="btn btn-light btn-lg px-5">Get Started</a>
+                <a href="pages/public/issues.html" class="btn btn-outline-light btn-lg px-5">View Active Issues</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-hand-thumbs-up-fill"></i> CommunityConnect</h5>
+                    <p class="text-muted">Empowering communities through technology and collective action.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white"><i class="bi bi-facebook fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-twitter fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-instagram fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-linkedin fs-4"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">About Us</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">How It Works</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Success Stories</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6 class="fw-bold mb-3">For Organizations</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">Partner with Us</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Volunteer</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Donate</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6 class="fw-bold mb-3">Contact</h6>
+                    <ul class="list-unstyled text-muted">
+                        <!-- <li><i class="bi bi-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ec9f999c9c839e98ac8f83818199828598958f838282898f98c2839e8b">[email&#160;protected]</a></li> -->
+                        <li><i class="bi bi-telephone"></i> +1 (555) 123-4567</li>
+                        <li><i class="bi bi-geo-alt"></i> 123 Community St, City</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="text-center text-muted">
+                <p class="mb-0">&copy; 2024 CommunityConnect. All rights reserved. | <a href="#" class="text-muted">Privacy Policy</a> | <a href="#" class="text-muted">Terms of Service</a></p>
+            </div>
+        </div>
+    

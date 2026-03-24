@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CommunityConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../../index.html"><i class="bi bi-hand-thumbs-up-fill"></i> CommunityConnect</a>
+            <div class="navbar-nav ms-auto">
+                <span class="nav-link text-white"><i class="bi bi-shield-check"></i> Admin Panel</span>
+                <a class="nav-link" href="../public/login.html">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid section-padding">
+        <div class="row">
+            <div class="col-lg-2 mb-4">
+                <div class="dashboard-sidebar">
+                    <div class="nav flex-column">
+                        <a class="nav-link active" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        <a class="nav-link" href="#users"><i class="bi bi-people"></i> Users</a>
+                        <a class="nav-link" href="#issues"><i class="bi bi-exclamation-triangle"></i> Issues</a>
+                        <a class="nav-link" href="#logs"><i class="bi bi-file-text"></i> System Logs</a>
+                        <a class="nav-link" href="#"><i class="bi bi-gear"></i> Settings</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-10">
+                <h2 class="mb-4">System Administration</h2>
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary bg-opacity-10"><i class="bi bi-people text-primary"></i></div>
+                            <div class="stat-value">1,847</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning bg-opacity-10"><i class="bi bi-exclamation-triangle text-warning"></i></div>
+                            <div class="stat-value">342</div>
+                            <div class="stat-label">Active Issues</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success bg-opacity-10"><i class="bi bi-building text-success"></i></div>
+                            <div class="stat-value">156</div>
+                            <div class="stat-label">Partner NGOs</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info bg-opacity-10"><i class="bi bi-graph-up text-info"></i></div>
+                            <div class="stat-value">94%</div>
+                            <div class="stat-label">System Health</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="card card-custom">
+                            <div class="card-header"><h6 class="mb-0">User Activity (Last 7 Days)</h6></div>
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Citizens</span>
+                                        <strong>856 active</strong>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-primary" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Volunteers</span>
+                                        <strong>234 active</strong>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 45%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>NGO Coordinators</span>
+                                        <strong>89 active</strong>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-info" style="width: 35%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Partners</span>
+                                        <strong>45 active</strong>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-warning" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card card-custom">
+                            <div class="card-header"><h6 class="mb-0">Issue Statistics</h6></div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-6 mb-3">
+                                        <div class="display-6 text-warning">89</div>
+                                        <small>Pending</small>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <div class="display-6 text-primary">124</div>
+                                        <small>Verified</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="display-6 text-info">129</div>
+                                        <small>In Progress</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="display-6 text-success">2847</div>
+                                        <small>Resolved</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-custom mb-4" id="users">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-people me-2"></i>User Management</h5>
+                            <button class="btn btn-primary btn-sm">Add New User</button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#1001</td>
+                                    <td>John Citizen</td>
+                                    <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="660c090e0826030b070f0a4805090b">[email&#160;protected]</a></td>
+                                    <td><span class="badge bg-primary">Citizen</span></td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>Jan 15, 2024</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger">Suspend</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#1002</td>
+                                    <td>Sarah Coordinator</td>
+                                    <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bdcedccfdcd5fddacfd8d8d3ded4c9c493d2cfda">[email&#160;protected]</a></td>
+                                    <td><span class="badge bg-info">NGO Coordinator</span></td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>Jan 10, 2024</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger">Suspend</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#1003</td>
+                                    <td>Mike Johnson</td>
+                                    <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e4347454b6e4b434f4742004d4143">[email&#160;protected]</a></td>
+                                    <td><span class="badge bg-success">Volunteer</span></td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>Jan 5, 2024</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger">Suspend</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#1004</td>
+                                    <td>City Water Works</td>
+                                    <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c7aea9a1a887a4aeb3beb0a6b3a2b5e9a4a8aa">[email&#160;protected]</a></td>
+                                    <td><span class="badge bg-warning">Partner Org</span></td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>Dec 20, 2023</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger">Suspend</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card card-custom mb-4" id="issues">
+                    <div class="card-header"><h5 class="mb-0">Issue Moderation</h5></div>
+                    <div class="card-body p-0">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Reporter</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#2502</td>
+                                    <td>Water Pipeline Burst</td>
+                                    <td>John Citizen</td>
+                                    <td><span class="badge bg-info">Infrastructure</span></td>
+                                    <td><span class="badge badge-in-progress">In Progress</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">View</button>
+                                        <button class="btn btn-sm btn-outline-danger">Flag</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#2501</td>
+                                    <td>Illegal Construction</td>
+                                    <td>Mary Smith</td>
+                                    <td><span class="badge bg-warning">Public Safety</span></td>
+                                    <td><span class="badge badge-verified">Verified</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">View</button>
+                                        <button class="btn btn-sm btn-outline-danger">Flag</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card card-custom" id="logs">
+                    <div class="card-header"><h5 class="mb-0"><i class="bi bi-file-text me-2"></i>System Logs</h5></div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">New user registration</h6>
+                                    <small>2 hours ago</small>
+                                </div>
+                                <p class="mb-1 text-muted">User '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dabfb7b7bbf4bebbacb3a99abfb7bbb3b6f4b9b5b7">[email&#160;protected]</a>' registered as Volunteer</p>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Issue reported</h6>
+                                    <small>3 hours ago</small>
+                                </div>
+                                <p class="mb-1 text-muted">Issue #2502 'Water Pipeline Burst' reported by John Citizen</p>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">NGO verified issue</h6>
+                                    <small>4 hours ago</small>
+                                </div>
+                                <p class="mb-1 text-muted">Green City NGO verified issue #2501</p>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 just
