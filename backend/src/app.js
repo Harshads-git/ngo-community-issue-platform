@@ -34,8 +34,11 @@ app.use(hpp());
 // Sanitize data (Prevents NoSQL injection like {"email": {"$gt": ""}})
 app.use(mongoSanitize());
 
-// Enable CORS
-app.use(cors());
+// Enable CORS - allow the frontend origin set by CLIENT_URL (or all in dev)
+app.use(cors({
+  origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : '*',
+  credentials: true
+}));
 
 // Body parser
 app.use(express.json());

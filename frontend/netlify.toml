@@ -1,0 +1,8 @@
+[build]
+  publish = "website"
+
+# SPA-style redirect: serve index.html for all routes so deep-links work
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
