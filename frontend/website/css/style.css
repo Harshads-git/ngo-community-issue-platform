@@ -141,3 +141,37 @@ h1, h2, h3, h4, h5, h6 {
 
 .section-padding { padding: 4rem 0; }
 .section-title { font-size: 2.5rem; margin-bottom: 1rem; }
+
+/* =========================================
+   ANIMATIONS & KEYFRAMES
+   ========================================= */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseSoft {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; /* Hidden initially before animation starts */
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+.animate-pulse-soft {
+    animation: pulseSoft 3s infinite ease-in-out;
+}
