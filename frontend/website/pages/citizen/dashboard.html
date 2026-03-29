@@ -169,53 +169,16 @@
         </div>
     </div>
 
-    <!-- Track Issue Modal -->
+    <!-- Track Issue Modal (dynamic) -->
     <div class="modal fade" id="trackModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-white">Issue Timeline - #2451</h5>
+                    <h5 class="modal-title text-white" id="trackModalTitle">Issue Timeline</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <h6 class="fw-bold mb-3">Broken Street Light on Main Avenue</h6>
-                    <div class="timeline">
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <strong>Issue Reported</strong>
-                                <p class="mb-0 text-muted">Reported by John Citizen</p>
-                                <small class="text-muted">Feb 8, 2024 10:30 AM</small>
-                            </div>
-                        </div>
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <strong>AI Classification</strong>
-                                <p class="mb-0 text-muted">Classified as Infrastructure - High Priority</p>
-                                <small class="text-muted">Feb 8, 2024 10:31 AM</small>
-                            </div>
-                        </div>
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <strong>NGO Verification</strong>
-                                <p class="mb-0 text-muted">Verified by Green City NGO</p>
-                                <small class="text-muted">Feb 8, 2024 2:15 PM</small>
-                            </div>
-                        </div>
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <strong>Assigned to Volunteer</strong>
-                                <p class="mb-0 text-muted">Assigned to Mike Johnson</p>
-                                <small class="text-muted">Feb 9, 2024 9:00 AM</small>
-                            </div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <strong>Work in Progress</strong>
-                                <p class="mb-0 text-muted">Electrician team dispatched to location</p>
-                                <small class="text-muted">Feb 10, 2024 11:00 AM</small>
-                            </div>
-                        </div>
-                    </div>
+                <div class="modal-body" id="trackModalBody">
+                    <!-- Filled dynamically by openTrackModal() -->
                 </div>
             </div>
         </div>
@@ -253,28 +216,117 @@
 
         function renderIssues(issues) {
             const tableBody = document.getElementById('issuesTableBody');
-            tableBody.innerHTML = ''; // Clear current
+            tableBody.innerHTML = '';
+
+            if (issues.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">You have not reported any issues yet.</td></tr>';
+                return;
+            }
 
             issues.forEach(issue => {
                 const date = new Date(issue.createdAt).toLocaleDateString();
                 let statusBadge = 'badge-pending';
                 if (issue.status === 'resolved') statusBadge = 'bg-success';
                 else if (issue.status === 'in_progress') statusBadge = 'bg-info bg-opacity-75';
+                else if (issue.status === 'rejected') statusBadge = 'bg-danger';
+
+                // Encode the issue safely as a data attribute
+                const issueDataAttr = encodeURIComponent(JSON.stringify(issue));
 
                 tableBody.innerHTML += `
                     <tr>
-                        <td>...${issue._id.substring(issue._id.length - 4)}</td>
+                        <td>...${issue._id.slice(-4)}</td>
                         <td>${issue.title}</td>
                         <td><span class="badge bg-secondary">${issue.category}</span></td>
-                        <td><span class="badge ${statusBadge}">${issue.status.toUpperCase()}</span></td>
+                        <td><span class="badge ${statusBadge}">${issue.status.replace('_', ' ').toUpperCase()}</span></td>
                         <td><span class="badge bg-danger">${issue.severity}</span></td>
                         <td>${date}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#trackModal">Track</button>
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick="openTrackModal(decodeURIComponent('${issueDataAttr}'))">
+                                Track
+                            </button>
                         </td>
                     </tr>
                 `;
             });
+        }
+
+        function openTrackModal(issueJson) {
+            const issue = typeof issueJson === 'string' ? JSON.parse(issueJson) : issueJson;
+            const reportedDate = new Date(issue.createdAt).toLocaleString();
+            const reporterName = issue.user?.name || user.name;
+            const ai = issue.aiClassification || {};
+            const volunteer = issue.assignedTo?.name || null;
+
+            // Determine which steps are done based on current status
+            const statusOrder = ['reported', 'verified', 'in_progress', 'resolved'];
+            const currentIdx = statusOrder.indexOf(issue.status);
+
+            const steps = [
+                {
+                    label: 'Issue Reported',
+                    desc: `Reported by ${reporterName}`,
+                    time: reportedDate,
+                    done: true   // always done if we see the issue
+                },
+                {
+                    label: 'AI Classification',
+                    desc: ai.predictedCategory
+                        ? `Classified as ${ai.predictedCategory} — ${issue.severity} priority (${ai.confidenceScore ? Math.round(ai.confidenceScore * 100) + '% confidence' : 'N/A'})`
+                        : `Category: ${issue.category} — ${issue.severity} priority`,
+                    time: reportedDate,   // same moment as report (AI runs instantly)
+                    done: true
+                },
+                {
+                    label: 'NGO Verification',
+                    desc: issue.status === 'reported'
+                        ? 'Awaiting NGO review'
+                        : `Verified — status updated to ${issue.status.replace('_', ' ')}`,
+                    time: issue.status !== 'reported' ? 'After submission' : null,
+                    done: issue.status !== 'reported'
+                },
+                {
+                    label: 'Assigned to Volunteer',
+                    desc: volunteer ? `Assigned to ${volunteer}` : 'Not yet assigned',
+                    time: volunteer ? 'After verification' : null,
+                    done: !!volunteer
+                },
+                {
+                    label: issue.status === 'resolved' ? 'Issue Resolved ✅' : 'Work in Progress',
+                    desc: issue.status === 'resolved'
+                        ? 'Issue has been successfully resolved.'
+                        : issue.status === 'in_progress'
+                            ? `Task is currently in progress${volunteer ? ' by ' + volunteer : ''}.`
+                            : 'Awaiting action.',
+                    time: ['in_progress', 'resolved'].includes(issue.status) ? 'In progress' : null,
+                    done: issue.status === 'resolved'
+                }
+            ];
+
+            // Build modal content
+            document.getElementById('trackModalTitle').textContent = `Timeline — #...${issue._id.slice(-6)}`;
+            document.getElementById('trackModalBody').innerHTML = `
+                <h6 class="fw-bold mb-3">${issue.title}</h6>
+                <p class="text-muted small mb-3">
+                    <i class="bi bi-geo-alt-fill me-1"></i>${issue.location?.address || 'Location Unknown'}
+                </p>
+                <div class="timeline">
+                    ${steps.map(step => `
+                        <div class="timeline-item ${step.done ? 'completed' : ''}">
+                            <div class="timeline-content">
+                                <strong>${step.label}</strong>
+                                <p class="mb-0 text-muted">${step.desc}</p>
+                                ${step.time ? `<small class="text-muted">${step.time}</small>` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('trackModal'));
+            modal.show();
         }
 
         async function submitReport(e) {
