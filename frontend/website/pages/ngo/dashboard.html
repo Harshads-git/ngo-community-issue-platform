@@ -13,11 +13,11 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
-            CommuniFix</a>
+            <a class="navbar-brand" href="../../index.html"><i class="bi bi-hand-thumbs-up-fill"></i> CommuniFix</a>
             <div class="navbar-nav ms-auto">
                 <span class="nav-link text-white"><i class="bi bi-building"></i> <span id="userNameDisplay">NGO
                         User</span></span>
-                <a class="nav-link" href="../public/login.html">Logout</a>
+                <a class="nav-link" href="#" onclick="handleLogout()">Logout</a>
             </div>
         </div>
     </nav>
@@ -27,16 +27,15 @@
             <div class="col-lg-2 mb-4">
                 <div class="dashboard-sidebar">
                     <div class="nav flex-column">
-                        <a class="nav-link active" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        <a class="nav-link active" href="#top"><i class="bi bi-speedometer2"></i> Dashboard</a>
                         <a class="nav-link" href="#pending"><i class="bi bi-hourglass"></i> Pending</a>
                         <a class="nav-link" href="#verified"><i class="bi bi-check-circle"></i> Verified</a>
                         <a class="nav-link" href="#analytics"><i class="bi bi-graph-up"></i> Analytics</a>
-                        <a class="nav-link" href="#"><i class="bi bi-people"></i> Team</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-10">
+            <div class="col-lg-10" id="top">
                 <h2 class="mb-4">NGO Coordinator Dashboard</h2>
 
                 <div class="row g-4 mb-4">
@@ -74,13 +73,13 @@
                     </div>
                 </div>
 
+                <!-- Pending Issues -->
                 <div class="card card-custom mb-4" id="pending">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-hourglass-split me-2"></i>Pending Issues - AI Classification
+                        <h5 class="mb-0"><i class="bi bi-hourglass-split me-2"></i>Pending Issues — AI Classification
                         </h5>
                     </div>
                     <div class="card-body" id="pendingIssuesList">
-                        <!-- Dynamic Pending Issues from API will load here -->
                         <div class="text-center p-4">
                             <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -89,47 +88,20 @@
                     </div>
                 </div>
 
+                <!-- Verified & Assigned Issues -->
                 <div class="card card-custom mb-4" id="verified">
                     <div class="card-header">
-                        <h5 class="mb-0">Verified & Assigned Issues</h5>
+                        <h5 class="mb-0">Verified &amp; Assigned Issues</h5>
                     </div>
-                    <div class="card-body p-0">
-                        <table class="table table-custom mb-0">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Title</th>
-                                    <th>Assigned To</th>
-                                    <th>Status</th>
-                                    <th>Priority</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>#2498</td>
-                                    <td>Road Pothole Repair</td>
-                                    <td>Mike Johnson / City Works</td>
-                                    <td><span class="badge badge-in-progress">In Progress</span></td>
-                                    <td><span class="badge bg-danger">High</span></td>
-                                    <td><button class="btn btn-sm btn-outline-primary">Monitor</button></td>
-                                </tr>
-                                <tr>
-                                    <td>#2495</td>
-                                    <td>Street Light Repair</td>
-                                    <td>Emma Davis</td>
-                                    <td><span class="badge badge-assigned">Assigned</span></td>
-                                    <td><span class="badge bg-warning">Medium</span></td>
-                                    <td><button class="btn btn-sm btn-outline-primary">Monitor</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="card-body" id="assignedIssuesTable">
+                        <p class="text-muted text-center pt-3">Loading assigned issues...</p>
                     </div>
                 </div>
 
+                <!-- Analytics -->
                 <div class="card card-custom" id="analytics">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Reports & Analytics</h5>
+                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Reports &amp; Analytics</h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-4 mb-4">
@@ -154,13 +126,14 @@
                         </div>
                         <h6 class="fw-bold mb-3">Issues by Category</h6>
                         <div id="categoryProgressContainer">
-                            <!-- Category progress bars injected dynamically -->
+                            <!-- Injected dynamically -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script src="../../js/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -174,99 +147,113 @@
             fetchDashboardData();
         }
 
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../public/login.html';
+        }
+
         async function fetchDashboardData() {
             try {
-                // Fetch issues and metrics concurrently
-                const issuesPromise = fetch(`${CONFIG.API_BASE_URL}/api/issues`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                const metricsPromise = fetch(`${CONFIG.API_BASE_URL}/api/issues/metrics/all`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                const [issuesRes, metricsRes] = await Promise.all([issuesPromise, metricsPromise]);
+                const [issuesRes, metricsRes] = await Promise.all([
+                    fetch(`${CONFIG.API_BASE_URL}/api/issues?limit=100`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch(`${CONFIG.API_BASE_URL}/api/issues/metrics/all`, { headers: { 'Authorization': `Bearer ${token}` } })
+                ]);
                 const data = await issuesRes.json();
                 const metricsData = await metricsRes.json();
 
                 if (data.success) {
                     renderPendingIssues(data.data.filter(i => i.status === 'reported'));
+                    renderAssignedIssues(data.data.filter(i =>
+                        i.assignedTo && i.status !== 'resolved' && i.status !== 'rejected' && i.status !== 'dismissed'
+                    ));
                 }
-
-                if (metricsData.success) {
-                    renderMetrics(metricsData.data);
-                }
+                if (metricsData.success) renderMetrics(metricsData.data);
             } catch (err) {
-                console.error("Failed to load dashboard data:", err);
+                console.error('Failed to load dashboard data:', err);
             }
+        }
+
+        function renderAssignedIssues(issues) {
+            const container = document.getElementById('assignedIssuesTable');
+            if (issues.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center pt-3">No assigned issues in progress.</p>';
+                return;
+            }
+            const statusColor = { in_progress: 'badge-in-progress', verified: 'badge-verified', reported: 'badge-pending' };
+            container.innerHTML = `
+                <table class="table table-custom mb-0">
+                    <thead><tr><th>ID</th><th>Title</th><th>Assigned To</th><th>Status</th><th>Priority</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        ${issues.map(i => `
+                            <tr id="verified-${i._id}">
+                                <td>...${i._id.slice(-6)}</td>
+                                <td>${i.title}</td>
+                                <td>${i.assignedTo?.name || 'Volunteer'}</td>
+                                <td><span class="badge ${statusColor[i.status] || 'bg-secondary'}">${i.status.replace('_', ' ').toUpperCase()}</span></td>
+                                <td><span class="badge ${['critical', 'high'].includes(i.severity) ? 'bg-danger' : 'bg-warning text-dark'}">${i.severity}</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="monitorIssue('${i._id}','${i.title}','${i.status}','${(i.location?.address || 'Unknown').replace(/'/g, '')}')" >
+                                        <i class="bi bi-eye me-1"></i>Monitor
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success ms-1" onclick="updateIssueStatus('${i._id}','resolved')">
+                                        <i class="bi bi-check-circle me-1"></i>Resolve
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function monitorIssue(id, title, status, location) {
+            alert(`🔍 Monitoring Issue\n\nTitle: ${title}\nStatus: ${status.replace('_', ' ').toUpperCase()}\nLocation: ${location}\nID: ...${id.slice(-6)}\n\nThis would open a full monitoring panel in production.`);
         }
 
         function renderMetrics(metrics) {
             const { summary, byCategory, byStatus } = metrics;
-
-            // Extract specific statuses
-            const reported = byStatus.find(s => s._id === 'reported')?.count || 0;
-            const inProgress = byStatus.find(s => s._id === 'in_progress')?.count || 0;
-            const resolved = byStatus.find(s => s._id === 'resolved')?.count || 0;
-
-            document.getElementById('statPending').textContent = reported;
-            document.getElementById('statInProgress').textContent = inProgress;
-            document.getElementById('statResolved').textContent = resolved;
+            document.getElementById('statPending').textContent = byStatus.find(s => s._id === 'reported')?.count || 0;
+            document.getElementById('statInProgress').textContent = byStatus.find(s => s._id === 'in_progress')?.count || 0;
+            document.getElementById('statResolved').textContent = byStatus.find(s => s._id === 'resolved')?.count || 0;
             document.getElementById('statTotal').textContent = summary.total;
-
-            document.getElementById('statResolutionRate').textContent = typeof summary.resolutionRate === 'string' ? Math.round(parseFloat(summary.resolutionRate)) + '%' : '0%';
+            document.getElementById('statResolutionRate').textContent = typeof summary.resolutionRate === 'string'
+                ? Math.round(parseFloat(summary.resolutionRate)) + '%' : '0%';
             document.getElementById('statPendingActions').textContent = summary.pending;
 
-            // Render Category bars
-            const categoryContainer = document.getElementById('categoryProgressContainer');
-            categoryContainer.innerHTML = '';
-
+            const container = document.getElementById('categoryProgressContainer');
+            container.innerHTML = '';
             const colors = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger', 'bg-secondary'];
-
-            byCategory.forEach((cat, index) => {
-                const percentage = summary.total > 0 ? ((cat.count / summary.total) * 100).toFixed(1) : 0;
-                const color = colors[index % colors.length];
-
-                categoryContainer.innerHTML += `
-                    <div class="progress mb-2" style="height: 25px;">
-                        <div class="progress-bar ${color}" style="width: ${percentage}%">
-                            ${cat._id} ${percentage}%
-                        </div>
-                    </div>
-                `;
+            byCategory.forEach((cat, i) => {
+                const pct = summary.total > 0 ? ((cat.count / summary.total) * 100).toFixed(1) : 0;
+                container.innerHTML += `<div class="progress mb-2" style="height:25px"><div class="progress-bar ${colors[i % colors.length]}" style="width:${pct}%">${cat._id} ${pct}%</div></div>`;
             });
         }
 
         function renderPendingIssues(issues) {
             const list = document.getElementById('pendingIssuesList');
             list.innerHTML = '';
-
             if (issues.length === 0) {
-                list.innerHTML = '<p class="text-muted text-center pt-3">No pending issues to review!</p>';
+                list.innerHTML = '<p class="text-muted text-center pt-3">No pending issues to review! ✅</p>';
                 return;
             }
-
             issues.forEach(issue => {
                 const date = new Date(issue.createdAt).toLocaleString();
                 const ai = issue.aiClassification || {};
-
-                // Color coding borders based on severity
                 let borderClass = 'border-info';
                 if (issue.severity === 'critical') borderClass = 'border-danger';
                 else if (issue.severity === 'high') borderClass = 'border-warning';
 
-                // AI Confidence Warning UI
-                let aiWarningHtml = '';
-                if (ai.isFlagged || ai.confidenceScore < 0.6) {
-                    aiWarningHtml = `<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle"></i> Low AI Confidence: Human Review Needed</span>`;
-                }
+                const aiWarningHtml = (ai.isFlagged || ai.confidenceScore < 0.6)
+                    ? `<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle"></i> Low AI Confidence</span>`
+                    : '';
 
                 list.innerHTML += `
                     <div class="card border-start ${borderClass} border-4 mb-3" id="issueCard-${issue._id}">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-8">
-                                    <h6 class="fw-bold">#...${issue._id.substring(issue._id.length - 6)} - ${issue.title}</h6>
+                                    <h6 class="fw-bold">#...${issue._id.slice(-6)} — ${issue.title}</h6>
                                     <p class="text-muted">${issue.description}</p>
                                     <div class="mb-2">
                                         <span class="badge bg-info me-2">${issue.location?.address || 'Unknown'}</span>
@@ -275,22 +262,22 @@
                                     <div class="alert alert-info mb-0">
                                         <strong><i class="bi bi-cpu me-2"></i>AI Classification:</strong> ${aiWarningHtml}
                                         <div class="mt-2">
-                                            <strong>Category Predict:</strong> ${ai.predictedCategory || issue.category}<br>
-                                            <strong>Severity Predict:</strong> <span class="badge bg-dark">${issue.severity}</span><br>
-                                            <strong>Confidence Score:</strong> ${ai.confidenceScore ? Math.round(ai.confidenceScore * 100) + '%' : 'N/A'}<br>
+                                            <strong>Category:</strong> ${ai.predictedCategory || issue.category}<br>
+                                            <strong>Severity:</strong> <span class="badge bg-dark">${issue.severity}</span><br>
+                                            <strong>Confidence:</strong> ${ai.confidenceScore ? Math.round(ai.confidenceScore * 100) + '%' : 'N/A'}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 text-end mt-3 mt-lg-0">
                                     <h6 class="fw-bold text-muted mb-3">Actions</h6>
                                     <div class="d-grid gap-2">
-                                        <button class="btn btn-outline-success" onclick="updateIssueStatus('${issue._id}', 'in_progress')">
+                                        <button class="btn btn-outline-success" onclick="updateIssueStatus('${issue._id}','in_progress')">
                                             <i class="bi bi-gear-fill me-2"></i>Mark In Progress
                                         </button>
-                                        <button class="btn btn-outline-primary" onclick="updateIssueStatus('${issue._id}', 'resolved')">
+                                        <button class="btn btn-outline-primary" onclick="updateIssueStatus('${issue._id}','resolved')">
                                             <i class="bi bi-check-circle me-2"></i>Resolve Issue
                                         </button>
-                                        <button class="btn btn-outline-danger" onclick="updateIssueStatus('${issue._id}', 'rejected')">
+                                        <button class="btn btn-outline-danger" onclick="updateIssueStatus('${issue._id}','rejected')">
                                             <i class="bi bi-x-circle me-2"></i>Reject
                                         </button>
                                     </div>
@@ -304,28 +291,20 @@
 
         async function updateIssueStatus(issueId, newStatus) {
             try {
-                const response = await fetch(`${CONFIG.API_BASE_URL}/api/issues/${issueId}`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/api/issues/${issueId}`, {
                     method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: newStatus })
                 });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    // Temporarily fade out the card
-                    const card = document.getElementById(`issueCard-${issueId}`);
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    const card = document.getElementById(`issueCard-${issueId}`) ||
+                        document.getElementById(`verified-${issueId}`);
                     if (card) {
-                        card.style.opacity = '0.5';
-                        setTimeout(() => {
-                            fetchDashboardData();
-                        }, 500);
+                        card.style.transition = 'opacity 0.4s';
+                        card.style.opacity = '0';
                     }
-
-                    // Show a quick global success toast or alert (optional)
+                    setTimeout(() => fetchDashboardData(), 500);
                 } else {
                     alert(data.message || 'Failed to update issue status');
                 }

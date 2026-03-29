@@ -13,11 +13,11 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
-            CommuniFix</a>
+            <a class="navbar-brand" href="../../index.html"><i class="bi bi-hand-thumbs-up-fill"></i> CommuniFix</a>
             <div class="navbar-nav ms-auto">
                 <span class="nav-link text-white"><i class="bi bi-person-badge"></i> <span
                         id="userNameDisplay">Volunteer Name</span></span>
-                <a class="nav-link" href="../public/login.html">Logout</a>
+                <a class="nav-link" href="#" onclick="handleLogout()">Logout</a>
             </div>
         </div>
     </nav>
@@ -27,39 +27,40 @@
             <div class="col-lg-2 mb-4">
                 <div class="dashboard-sidebar">
                     <div class="nav flex-column">
-                        <a class="nav-link active" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                        <a class="nav-link" href="#assigned"><i class="bi bi-list-check"></i> My Tasks</a>
+                        <a class="nav-link active" href="#top"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        <a class="nav-link" href="#assigned"><i class="bi bi-list-check"></i> Available Tasks</a>
+                        <a class="nav-link" href="#mytasks"><i class="bi bi-person-check"></i> My Tasks</a>
                         <a class="nav-link" href="#completed"><i class="bi bi-check-circle"></i> Completed</a>
-                        <a class="nav-link" href="#"><i class="bi bi-trophy"></i> Achievements</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-10">
+            <div class="col-lg-10" id="top">
                 <h2 class="mb-4">Volunteer Dashboard</h2>
 
+                <!-- Live Stat Cards -->
                 <div class="row g-4 mb-4">
                     <div class="col-md-3">
                         <div class="stat-card">
                             <div class="stat-icon bg-primary bg-opacity-10"><i class="bi bi-list-task text-primary"></i>
                             </div>
-                            <div class="stat-value">8</div>
-                            <div class="stat-label">Assigned Tasks</div>
+                            <div class="stat-value" id="statAvailable">...</div>
+                            <div class="stat-label">Available Tasks</div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="stat-card">
-                            <div class="stat-icon bg-warning bg-opacity-10"><i class="bi bi-hourglass text-warning"></i>
-                            </div>
-                            <div class="stat-value">3</div>
-                            <div class="stat-label">Pending</div>
+                            <div class="stat-icon bg-warning bg-opacity-10"><i
+                                    class="bi bi-person-check text-warning"></i></div>
+                            <div class="stat-value" id="statMyClaimed">...</div>
+                            <div class="stat-label">My Claimed Tasks</div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="stat-card">
                             <div class="stat-icon bg-info bg-opacity-10"><i class="bi bi-arrow-repeat text-info"></i>
                             </div>
-                            <div class="stat-value">2</div>
+                            <div class="stat-value" id="statInProgress">...</div>
                             <div class="stat-label">In Progress</div>
                         </div>
                     </div>
@@ -67,15 +68,16 @@
                         <div class="stat-card">
                             <div class="stat-icon bg-success bg-opacity-10"><i
                                     class="bi bi-check-circle text-success"></i></div>
-                            <div class="stat-value">47</div>
-                            <div class="stat-label">Completed</div>
+                            <div class="stat-value" id="statResolved">...</div>
+                            <div class="stat-label">Resolved</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Available Tasks (unassigned) -->
                 <div class="card card-custom mb-4" id="assigned">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Assigned Tasks</h5>
+                        <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Available Tasks to Claim</h5>
                     </div>
                     <div class="card-body" id="availableTasksList">
                         <div class="text-center p-4">
@@ -86,9 +88,24 @@
                     </div>
                 </div>
 
+                <!-- My Claimed Tasks -->
+                <div class="card card-custom mb-4" id="mytasks">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-person-check me-2"></i>My Claimed Tasks</h5>
+                    </div>
+                    <div class="card-body" id="myClaimedTasksList">
+                        <div class="text-center p-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Tasks -->
                 <div class="card card-custom" id="completed">
                     <div class="card-header">
-                        <h5 class="mb-0">Recently Completed Tasks</h5>
+                        <h5 class="mb-0">Resolved Tasks</h5>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-custom mb-0">
@@ -97,13 +114,13 @@
                                     <th>ID</th>
                                     <th>Title</th>
                                     <th>Category</th>
-                                    <th>Completed Date</th>
-                                    <th>Impact</th>
+                                    <th>Reported On</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="myActiveTasksList">
+                            <tbody id="myResolvedTasksList">
                                 <tr>
-                                    <td colspan="5" class="text-center">Loading your tasks...</td>
+                                    <td colspan="5" class="text-center">Loading...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -112,6 +129,7 @@
             </div>
         </div>
     </div>
+
     <script src="../../js/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -125,10 +143,15 @@
             fetchVolunteerData();
         }
 
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../public/login.html';
+        }
+
         async function fetchVolunteerData() {
             try {
-                // Fetch all issues (or active issues)
-                const response = await fetch(`${CONFIG.API_BASE_URL}/api/issues`, {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/issues?limit=100`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
@@ -136,23 +159,41 @@
                 if (data.success) {
                     const issues = data.data;
 
-                    // Tasks not yet assigned to anyone
-                    const availableTasks = issues.filter(i =>
+                    // Available: not yet assigned AND not resolved/rejected
+                    const available = issues.filter(i =>
                         !i.assignedTo &&
-                        (i.status === 'reported' || i.status === 'in_progress')
+                        i.status !== 'resolved' &&
+                        i.status !== 'rejected' &&
+                        i.status !== 'dismissed'
                     );
 
-                    // Tasks specifically assigned to THIS volunteer
-                    const myTasks = issues.filter(i =>
+                    // My claimed tasks: assignedTo is ME and not yet resolved
+                    const myClaimed = issues.filter(i =>
                         i.assignedTo &&
-                        i.assignedTo._id === user.id
+                        (i.assignedTo._id || i.assignedTo).toString() === user.id &&
+                        i.status !== 'resolved'
                     );
 
-                    renderAvailable(availableTasks);
-                    renderMyTasks(myTasks);
+                    // My resolved tasks
+                    const myResolved = issues.filter(i =>
+                        i.assignedTo &&
+                        (i.assignedTo._id || i.assignedTo).toString() === user.id &&
+                        i.status === 'resolved'
+                    );
+
+                    // Update stats
+                    document.getElementById('statAvailable').textContent = available.length;
+                    document.getElementById('statMyClaimed').textContent = myClaimed.length;
+                    document.getElementById('statInProgress').textContent = myClaimed.filter(i => i.status === 'in_progress').length;
+                    document.getElementById('statResolved').textContent = myResolved.length;
+
+                    renderAvailable(available);
+                    renderMyClaimed(myClaimed);
+                    renderMyResolved(myResolved);
                 }
             } catch (err) {
                 console.error("Failed to load Volunteer data:", err);
+                document.getElementById('availableTasksList').innerHTML = '<p class="text-danger text-center">Failed to load tasks. Please refresh.</p>';
             }
         }
 
@@ -161,38 +202,74 @@
             list.innerHTML = '';
 
             if (issues.length === 0) {
-                list.innerHTML = '<p class="text-muted text-center pt-3">No unassigned tasks currently available.</p>';
+                list.innerHTML = '<p class="text-muted text-center pt-3"><i class="bi bi-check-circle text-success me-2"></i>No unassigned tasks currently available. Great work!</p>';
                 return;
             }
 
             issues.forEach(issue => {
-                const date = new Date(issue.createdAt).toLocaleString();
-
+                const date = new Date(issue.createdAt).toLocaleDateString();
                 let borderClass = 'border-info';
                 if (issue.severity === 'critical') borderClass = 'border-danger';
                 else if (issue.severity === 'high') borderClass = 'border-warning';
+                const severityBadge = ['critical', 'high'].includes(issue.severity) ? 'bg-danger' : 'bg-warning text-dark';
 
                 list.innerHTML += `
-                    <div class="card border-start ${borderClass} border-4 mb-3">
+                    <div class="card border-start ${borderClass} border-4 mb-3" id="avail-${issue._id}">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h6 class="fw-bold">#...${issue._id.substring(issue._id.length - 6)} - ${issue.title}</h6>
-                                    <p class="text-muted mb-2">${issue.description}</p>
-                                    <div>
-                                        <span class="badge bg-danger me-2">${issue.severity} Priority</span>
-                                        <span class="badge bg-info">${issue.category}</span>
-                                    </div>
+                                    <h6 class="fw-bold mb-1">#...${issue._id.slice(-6)} — ${issue.title}</h6>
+                                    <p class="text-muted mb-2 small">${issue.description}</p>
+                                    <span class="badge ${severityBadge} me-2">${issue.severity} Priority</span>
+                                    <span class="badge bg-info">${issue.category}</span>
                                 </div>
-                                <span class="badge badge-pending">Unassigned</span>
+                                <span class="badge badge-pending ms-2">Unassigned</span>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="mb-1"><i class="bi bi-geo-alt-fill me-2"></i>${issue.location?.address || 'Location Unknown'}</p>
-                                    <p class="mb-1"><i class="bi bi-calendar me-2"></i>Reported: ${date}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted"><i class="bi bi-geo-alt-fill me-1"></i>${issue.location?.address || 'Unknown'} · <i class="bi bi-calendar me-1"></i>${date}</small>
+                                <button class="btn btn-success btn-sm" onclick="claimTask('${issue._id}')">
+                                    <i class="bi bi-hand-index me-1"></i>Claim Task
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderMyClaimed(tasks) {
+            const list = document.getElementById('myClaimedTasksList');
+            list.innerHTML = '';
+
+            if (tasks.length === 0) {
+                list.innerHTML = '<p class="text-muted text-center pt-3">You have not claimed any tasks yet. Claim from the list above!</p>';
+                return;
+            }
+
+            tasks.forEach(t => {
+                const date = new Date(t.createdAt).toLocaleDateString();
+                const statusBadge = t.status === 'in_progress' ? 'badge-in-progress' : 'badge-pending';
+
+                list.innerHTML += `
+                    <div class="card border-start border-success border-4 mb-3" id="claimed-${t._id}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-1">#...${t._id.slice(-6)} — ${t.title}</h6>
+                                    <p class="text-muted mb-2 small">${t.description}</p>
+                                    <span class="badge bg-secondary me-2">${t.category}</span>
+                                    <span class="badge ${statusBadge}">${t.status.replace('_', ' ').toUpperCase()}</span>
                                 </div>
-                                <div class="col-md-6 text-end d-flex align-items-end justify-content-end">
-                                    <button class="btn btn-success" onclick="claimTask('${issue._id}')">Claim Task</button>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted"><i class="bi bi-geo-alt-fill me-1"></i>${t.location?.address || 'Unknown'} · ${date}</small>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-info btn-sm" onclick="updateTaskStatus('${t._id}', 'in_progress')">
+                                        <i class="bi bi-arrow-repeat me-1"></i>Mark In Progress
+                                    </button>
+                                    <button class="btn btn-success btn-sm" onclick="updateTaskStatus('${t._id}', 'resolved')">
+                                        <i class="bi bi-check-circle me-1"></i>Mark Resolved
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -201,30 +278,33 @@
             });
         }
 
-        function renderMyTasks(myTasks) {
-            const tbody = document.getElementById('myActiveTasksList');
+        function renderMyResolved(tasks) {
+            const tbody = document.getElementById('myResolvedTasksList');
             tbody.innerHTML = '';
 
-            if (myTasks.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">You have no active claimed tasks</td></tr>';
+            if (tasks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No resolved tasks yet.</td></tr>';
                 return;
             }
 
-            myTasks.forEach(t => {
+            tasks.forEach(t => {
                 const date = new Date(t.createdAt).toLocaleDateString();
                 tbody.innerHTML += `
                     <tr>
-                        <td>...${t._id.substring(t._id.length - 4)}</td>
+                        <td>...${t._id.slice(-4)}</td>
                         <td>${t.title}</td>
                         <td><span class="badge bg-primary">${t.category}</span></td>
                         <td>${date}</td>
-                        <td><span class="badge ${t.status === 'resolved' ? 'bg-success' : 'bg-warning'}">${t.status}</span></td>
+                        <td><span class="badge bg-success">Resolved</span></td>
                     </tr>
                 `;
             });
         }
 
         async function claimTask(issueId) {
+            const btn = document.querySelector(`#avail-${issueId} button`);
+            if (btn) { btn.disabled = true; btn.textContent = 'Claiming...'; }
+
             try {
                 const response = await fetch(`${CONFIG.API_BASE_URL}/api/issues/${issueId}`, {
                     method: 'PUT',
@@ -232,19 +312,56 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ assignedTo: user.id })
+                    body: JSON.stringify({ assignedTo: user.id, status: 'in_progress' })
                 });
 
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    // Update successfully claimed!
-                    fetchVolunteerData(); // Refresh list to move it to 'My Tasks'
+                    // Remove from available list immediately
+                    const card = document.getElementById(`avail-${issueId}`);
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s';
+                        card.style.opacity = '0';
+                        setTimeout(() => { fetchVolunteerData(); }, 400);
+                    }
                 } else {
                     alert('Could not claim task: ' + data.message);
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-hand-index me-1"></i>Claim Task'; }
                 }
             } catch (err) {
                 console.error('Error claiming task:', err);
+                alert('An error occurred while claiming the task.');
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-hand-index me-1"></i>Claim Task'; }
+            }
+        }
+
+        async function updateTaskStatus(issueId, newStatus) {
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/issues/${issueId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // If resolved, fade out the claimed card and refresh
+                    const card = document.getElementById(`claimed-${issueId}`);
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s';
+                        card.style.opacity = '0';
+                        setTimeout(() => fetchVolunteerData(), 400);
+                    }
+                } else {
+                    alert('Could not update task: ' + data.message);
+                }
+            } catch (err) {
+                console.error('Error updating task status:', err);
                 alert('An error occurred.');
             }
         }

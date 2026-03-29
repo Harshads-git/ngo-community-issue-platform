@@ -151,8 +151,13 @@ exports.updateIssue = async (req, res) => {
             return res.status(404).json({ success: false, message: `Issue not found with id of ${req.params.id}` });
         }
 
-        // Make sure user is issue owner OR is an NGO/Admin
-        if (issue.user.toString() !== req.user.id && req.user.role !== 'ngo' && req.user.role !== 'admin') {
+        // Make sure user is issue owner OR is an NGO/Admin/Volunteer
+        // Volunteers can claim any unassigned issue or update issues assigned to them
+        const isOwner = issue.user.toString() === req.user.id;
+        const isNGOAdmin = req.user.role === 'ngo' || req.user.role === 'admin';
+        const isVolunteer = req.user.role === 'volunteer';
+
+        if (!isOwner && !isNGOAdmin && !isVolunteer) {
             return res.status(401).json({ success: false, message: `User ${req.user.id} is not authorized to update this issue` });
         }
 

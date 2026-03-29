@@ -15,7 +15,7 @@ const issueSchema = new mongoose.Schema({
     category: {
         type: String,
         required: [true, 'Please specify an issue category'],
-        enum: ['infrastructure', 'sanitation', 'environment', 'public_safety', 'other'] // Can be expanded later
+        enum: ['infrastructure', 'sanitation', 'environment', 'public_safety', 'health', 'education', 'other']
     },
     location: {
         address: {
@@ -36,7 +36,7 @@ const issueSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['reported', 'verified', 'in_progress', 'resolved', 'dismissed'],
+        enum: ['reported', 'verified', 'in_progress', 'resolved', 'rejected', 'dismissed'],
         default: 'reported'
     },
     severity: {
