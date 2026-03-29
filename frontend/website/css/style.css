@@ -37,7 +37,12 @@ body {
     line-height: 1.6;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
     line-height: 1.2;
@@ -66,7 +71,8 @@ h1, h2, h3, h4, h5, h6 {
     transition: var(--transition);
 }
 
-.navbar-custom .nav-link:hover, .navbar-custom .nav-link.active {
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link.active {
     background: rgba(255, 255, 255, 0.15);
     color: white !important;
 }
@@ -91,12 +97,35 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--shadow-lg);
 }
 
-.badge-pending { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; }
-.badge-verified { background: linear-gradient(135deg, #3498db, #2563a8); color: white; }
-.badge-assigned { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
-.badge-in-progress { background: linear-gradient(135deg, #1abc9c, #16a085); color: white; }
-.badge-completed { background: linear-gradient(135deg, #27ae60, #229954); color: white; }
-.badge-rejected { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+.badge-pending {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+}
+
+.badge-verified {
+    background: linear-gradient(135deg, #3498db, #2563a8);
+    color: white;
+}
+
+.badge-assigned {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+}
+
+.badge-in-progress {
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+    color: white;
+}
+
+.badge-completed {
+    background: linear-gradient(135deg, #27ae60, #229954);
+    color: white;
+}
+
+.badge-rejected {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
 
 .btn-primary-custom {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -139,8 +168,14 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--shadow-md);
 }
 
-.section-padding { padding: 4rem 0; }
-.section-title { font-size: 2.5rem; margin-bottom: 1rem; }
+.section-padding {
+    padding: 4rem 0;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
 
 /* =========================================
    ANIMATIONS & KEYFRAMES
@@ -150,6 +185,7 @@ h1, h2, h3, h4, h5, h6 {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -157,20 +193,40 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes pulseSoft {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .animate-fade-in-up {
     animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    opacity: 0; /* Hidden initially before animation starts */
+    opacity: 0;
+    /* Hidden initially before animation starts */
 }
 
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
+.delay-100 {
+    animation-delay: 100ms;
+}
+
+.delay-200 {
+    animation-delay: 200ms;
+}
+
+.delay-300 {
+    animation-delay: 300ms;
+}
+
+.delay-400 {
+    animation-delay: 400ms;
+}
 
 .animate-pulse-soft {
     animation: pulseSoft 3s infinite ease-in-out;

@@ -8,7 +8,7 @@ module.exports = defineConfig({
         timeout: 5_000,
     },
     fullyParallel: false, // Run sequentially so state (register -> login) is consistent
-    reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
+    reporter: [['list'], ['html', { outputFolder: '../tests/playwright-report', open: 'never' }]],
     use: {
         baseURL: 'http://127.0.0.1:3000',
         headless: false, // Show the browser so the user can watch
