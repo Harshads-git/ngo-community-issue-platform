@@ -1,165 +1,287 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-// Use a unique email every test run to avoid "email already registered" errors
-const testEmail = `citizen_${Date.now()}@test.com`;
-const testPassword = 'Testing@123';
-const testName = { first: 'Test', last: 'Citizen' };
+// Unique credentials per run to avoid conflicts
+const timestamp = Date.now();
+const citizenEmail = `citizen_${timestamp}@test.com`;
+const ngoEmail = `ngo_${timestamp}@test.com`;
+const volEmail = `vol_${timestamp}@test.com`;
+const password = 'Testing@123';
+const API = 'http://127.0.0.1:5000';
 
-// ─────────────────────────────────────────
-// SUITE 1 – Public Pages
-// ─────────────────────────────────────────
-test.describe('Public pages load correctly', () => {
+// ─────────────────────────────────────────────────
+// SUITE 1 – Public Pages (branding + content check)
+// ─────────────────────────────────────────────────
+test.describe('Suite 1: Public Pages', () => {
 
-    test('Home page renders with hero section and nav', async ({ page }) => {
+    test('Home page loads with CommuniFix brand and hero', async ({ page }) => {
         await page.goto('/');
-        await expect(page).toHaveTitle(/CommunityConnect/);
+        await expect(page).toHaveTitle(/CommuniFix/);
         await expect(page.locator('nav.navbar')).toBeVisible();
         await expect(page.locator('section.hero-section')).toBeVisible();
-        // Use the h1 specifically to avoid matching other elements
         await expect(page.locator('h1').first()).toBeVisible();
-        console.log('✅ Home page loaded OK');
+        console.log('✅ Home page OK');
     });
 
-    test('Public Issues page renders', async ({ page }) => {
+    test('Public Issues page loads', async ({ page }) => {
         await page.goto('/pages/public/issues.html');
+        await expect(page).toHaveTitle(/CommuniFix/);
         await expect(page.locator('h1, h2').first()).toBeVisible();
-        console.log('✅ Issues page loaded OK');
+        console.log('✅ Issues page OK');
     });
 
-    test('Success Stories page renders', async ({ page }) => {
+    test('Success Stories page loads', async ({ page }) => {
         await page.goto('/pages/public/resolved.html');
-        // Use the h1 heading specifically to avoid strict-mode violation
+        await expect(page).toHaveTitle(/CommuniFix/);
         await expect(page.locator('h1').first()).toBeVisible();
-        console.log('✅ Success Stories page loaded OK');
+        console.log('✅ Resolved page OK');
     });
 
-    test('Login page renders form', async ({ page }) => {
+    test('Login page loads with form fields', async ({ page }) => {
         await page.goto('/pages/public/login.html');
+        await expect(page).toHaveTitle(/CommuniFix/);
         await expect(page.locator('#email')).toBeVisible();
         await expect(page.locator('#password')).toBeVisible();
-        console.log('✅ Login page loaded OK');
+        await expect(page.locator('button[type="submit"]')).toBeVisible();
+        console.log('✅ Login page OK');
     });
 
-    test('Register page renders form', async ({ page }) => {
+    test('Register page loads with all required form fields', async ({ page }) => {
         await page.goto('/pages/public/register.html');
+        await expect(page).toHaveTitle(/CommuniFix/);
         await expect(page.locator('#firstName')).toBeVisible();
         await expect(page.locator('#email')).toBeVisible();
-        console.log('✅ Register page loaded OK');
+        await expect(page.locator('#password')).toBeVisible();
+        await expect(page.locator('#roleSelect')).toBeVisible();
+        console.log('✅ Register page OK');
     });
 });
 
-// ─────────────────────────────────────────
-// SUITE 2 – Citizen Auth & Reporting
-// ─────────────────────────────────────────
-test.describe('Citizen: Register → Login → Report Issue', () => {
+// ─────────────────────────────────────────────────
+// SUITE 2 – Auth Guards (unauthenticated redirects)
+// ─────────────────────────────────────────────────
+test.describe('Suite 2: Auth Guards', () => {
 
-    test('Citizen can register a new account', async ({ page }) => {
-        await page.goto('/pages/public/register.html');
-
-        await page.fill('#firstName', testName.first);
-        await page.fill('#lastName', testName.last);
-        await page.fill('#email', testEmail);
-        await page.fill('#password', testPassword);
-        await page.fill('#confirmPassword', testPassword);
-
-        // Select citizen role
-        await page.selectOption('#roleSelect', 'citizen');
-
-        // Agree to terms if checkbox exists
-        const checkbox = page.locator('#agreeTerms');
-        if (await checkbox.count() > 0) {
-            await checkbox.check();
-        }
-
-        await page.click('button[type="submit"]');
-
-        // Registration shows a success alert then redirects after 1.5s delay
-        await expect(page.locator('#successAlert')).toBeVisible({ timeout: 8_000 });
-
-        // Now wait for eventual redirect
-        await page.waitForURL('**/citizen/dashboard.html', { timeout: 15_000 });
-        await expect(page.locator('text=My Reported Issues')).toBeVisible();
-        console.log(`✅ Registered as citizen with email: ${testEmail}`);
-    });
-
-    test('Logged-in citizen can report an issue', async ({ page }) => {
-        await page.goto('/pages/public/login.html');
-        await page.fill('#email', testEmail);
-        await page.fill('#password', testPassword);
-        await page.click('button[type="submit"]');
-
-        // Login redirects immediately after success
-        await page.waitForURL('**/citizen/dashboard.html', { timeout: 10_000 });
-
-        // Open report modal
-        await page.click('button:has-text("Report New Issue")');
-        await expect(page.locator('#reportModal')).toBeVisible({ timeout: 5_000 });
-
-        // Fill in the form
-        await page.fill('#issueTitle', 'Playwright Test: Broken Streetlight');
-        await page.selectOption('#issueCategory', 'infrastructure');
-        await page.fill('#issueDescription', 'The streetlight on Oak Avenue has been out for 3 days and is a safety hazard.');
-        await page.fill('#issueLocation', 'Oak Avenue, City Centre');
-
-        await page.click('#submitBtn');
-
-        // Wait for success alert
-        await expect(page.locator('#reportAlert')).toContainText('Successfully', { timeout: 10_000 });
-        console.log('✅ Issue reported successfully via Citizen Dashboard');
-
-        // Wait for modal to auto-close and table to update
-        await expect(page.locator('#reportModal')).not.toBeVisible({ timeout: 5_000 });
-        await expect(page.locator('text=Playwright Test: Broken Streetlight')).toBeVisible({ timeout: 10_000 });
-        console.log('✅ Reported issue appears in table');
-    });
-
-    test('Unauthenticated user is redirected from citizen dashboard', async ({ page }) => {
-        // Clear any existing auth data first
+    async function clearAuth(page) {
         await page.goto('/');
         await page.evaluate(() => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
         });
-        // Now try to access protected page directly
+    }
+
+    test('Unauthenticated user → citizen dashboard → redirect to login', async ({ page }) => {
+        await clearAuth(page);
         await page.goto('/pages/citizen/dashboard.html');
-        // Should be redirected to login
-        await page.waitForURL('**/login.html', { timeout: 5_000 });
-        console.log('✅ Unauthenticated access correctly redirects to login page');
+        await page.waitForURL('**/login.html', { timeout: 6_000 });
+        console.log('✅ Citizen auth guard OK');
+    });
+
+    test('Unauthenticated user → volunteer dashboard → redirect to login', async ({ page }) => {
+        await clearAuth(page);
+        await page.goto('/pages/volunteer/dashboard.html');
+        await page.waitForURL('**/login.html', { timeout: 6_000 });
+        console.log('✅ Volunteer auth guard OK');
+    });
+
+    test('Unauthenticated user → NGO dashboard → redirect to login', async ({ page }) => {
+        await clearAuth(page);
+        await page.goto('/pages/ngo/dashboard.html');
+        await page.waitForURL('**/login.html', { timeout: 6_000 });
+        console.log('✅ NGO auth guard OK');
     });
 });
 
-// ─────────────────────────────────────────
-// SUITE 3 – API Health Checks
-// ─────────────────────────────────────────
-test.describe('Backend API health checks', () => {
+// ─────────────────────────────────────────────────
+// SUITE 3 – Citizen Register → Login → Report
+// ─────────────────────────────────────────────────
+test.describe('Suite 3: Citizen Flow', () => {
 
-    test('GET /api/issues returns success', async ({ request }) => {
-        const response = await request.get('http://127.0.0.1:5000/api/issues');
-        expect(response.status()).toBe(200);
-        const body = await response.json();
+    test('Citizen registers a new account', async ({ page }) => {
+        await page.goto('/pages/public/register.html');
+        await page.fill('#firstName', 'Test');
+        await page.fill('#lastName', 'Citizen');
+        await page.fill('#email', citizenEmail);
+        await page.fill('#password', password);
+        await page.fill('#confirmPassword', password);
+        await page.selectOption('#roleSelect', 'citizen');
+        await page.locator('#termsCheck').check();
+        await page.click('button[type="submit"]');
+        await expect(page.locator('#successAlert')).toBeVisible({ timeout: 8_000 });
+        await page.waitForURL('**/citizen/dashboard.html', { timeout: 15_000 });
+        await expect(page.locator('text=My Reported Issues')).toBeVisible();
+        console.log(`✅ Citizen registered: ${citizenEmail}`);
+    });
+
+    test('Citizen logs in and sees dashboard', async ({ page }) => {
+        await page.goto('/pages/public/login.html');
+        await page.fill('#email', citizenEmail);
+        await page.fill('#password', password);
+        await page.click('button[type="submit"]');
+        await page.waitForURL('**/citizen/dashboard.html', { timeout: 10_000 });
+        await expect(page.locator('h2')).toContainText('Welcome');
+        console.log('✅ Citizen login OK');
+    });
+
+    test('Citizen can report a new issue via the modal', async ({ page }) => {
+        // Login first
+        await page.goto('/pages/public/login.html');
+        await page.fill('#email', citizenEmail);
+        await page.fill('#password', password);
+        await page.click('button[type="submit"]');
+        await page.waitForURL('**/citizen/dashboard.html', { timeout: 10_000 });
+
+        // Open the Report Issue modal
+        await page.click('button:has-text("Report New Issue")');
+        await expect(page.locator('#reportModal')).toBeVisible({ timeout: 5_000 });
+
+        // Fill the form
+        await page.fill('#issueTitle', 'QA Test: Broken Streetlight');
+        await page.selectOption('#issueCategory', 'infrastructure');
+        await page.fill('#issueDescription', 'Streetlight on Test Ave has been out for 3 days. Safety hazard.');
+        await page.fill('#issueLocation', 'Test Avenue, City Centre');
+
+        await page.click('#submitBtn');
+
+        // Verify success
+        await expect(page.locator('#reportAlert')).toContainText('Successfully', { timeout: 10_000 });
+        await expect(page.locator('#reportModal')).not.toBeVisible({ timeout: 5_000 });
+        await expect(page.locator('text=QA Test: Broken Streetlight')).toBeVisible({ timeout: 10_000 });
+        console.log('✅ Citizen can report an issue');
+    });
+
+    test('Login with wrong password shows error message', async ({ page }) => {
+        await page.goto('/pages/public/login.html');
+        await page.fill('#email', citizenEmail);
+        await page.fill('#password', 'WRONG_PASSWORD');
+        await page.click('button[type="submit"]');
+        await expect(page.locator('#errorAlert')).toBeVisible({ timeout: 6_000 });
+        await expect(page.locator('#errorAlert')).not.toHaveClass(/d-none/);
+        console.log('✅ Wrong password shows error alert');
+    });
+});
+
+// ─────────────────────────────────────────────────
+// SUITE 4 – Volunteer Registration & Dashboard
+// ─────────────────────────────────────────────────
+test.describe('Suite 4: Volunteer Flow', () => {
+
+    test('Volunteer registers an account', async ({ page }) => {
+        await page.goto('/pages/public/register.html');
+        await page.fill('#firstName', 'Test');
+        await page.fill('#lastName', 'Volunteer');
+        await page.fill('#email', volEmail);
+        await page.fill('#password', password);
+        await page.fill('#confirmPassword', password);
+        await page.selectOption('#roleSelect', 'volunteer');
+        await page.locator('#termsCheck').check();
+        await page.click('button[type="submit"]');
+        await expect(page.locator('#successAlert')).toBeVisible({ timeout: 8_000 });
+        await page.waitForURL('**/volunteer/dashboard.html', { timeout: 15_000 });
+        console.log(`✅ Volunteer registered: ${volEmail}`);
+    });
+
+    test('Volunteer dashboard loads with Available Tasks section', async ({ page }) => {
+        // Login as volunteer
+        await page.goto('/pages/public/login.html');
+        await page.fill('#email', volEmail);
+        await page.fill('#password', password);
+        await page.click('button[type="submit"]');
+        await page.waitForURL('**/volunteer/dashboard.html', { timeout: 10_000 });
+        await expect(page.locator('h2').first()).toContainText('Volunteer');
+        await expect(page.locator('#availableTasksList')).toBeVisible({ timeout: 8_000 });
+        console.log('✅ Volunteer dashboard loads OK');
+    });
+});
+
+// ─────────────────────────────────────────────────
+// SUITE 5 – NGO Registration & Dashboard
+// ─────────────────────────────────────────────────
+test.describe('Suite 5: NGO Flow', () => {
+
+    test('NGO registers an account', async ({ page }) => {
+        await page.goto('/pages/public/register.html');
+        await page.fill('#firstName', 'Test');
+        await page.fill('#lastName', 'NGO');
+        await page.fill('#email', ngoEmail);
+        await page.fill('#password', password);
+        await page.fill('#confirmPassword', password);
+        await page.selectOption('#roleSelect', 'ngo');
+        // Wait for org fields to appear, then fill them
+        await page.fill('#orgName', 'Test NGO Organization');
+        await page.locator('#termsCheck').check();
+        await page.click('button[type="submit"]');
+        await expect(page.locator('#successAlert')).toBeVisible({ timeout: 8_000 });
+        await page.waitForURL('**/ngo/dashboard.html', { timeout: 15_000 });
+        console.log(`✅ NGO registered: ${ngoEmail}`);
+    });
+
+    test('NGO dashboard loads stat cards and issue list', async ({ page }) => {
+        await page.goto('/pages/public/login.html');
+        await page.fill('#email', ngoEmail);
+        await page.fill('#password', password);
+        await page.click('button[type="submit"]');
+        await page.waitForURL('**/ngo/dashboard.html', { timeout: 10_000 });
+        await expect(page.locator('h2').first()).toContainText('NGO');
+        // Wait for stat cards to load from API
+        await expect(page.locator('#statPending')).not.toContainText('...', { timeout: 10_000 });
+        console.log('✅ NGO dashboard loads with live stats');
+    });
+});
+
+// ─────────────────────────────────────────────────
+// SUITE 6 – Backend API Health Checks
+// ─────────────────────────────────────────────────
+test.describe('Suite 6: Backend API Health', () => {
+
+    test('GET / returns backend health message', async ({ request }) => {
+        const res = await request.get(`${API}/`);
+        expect(res.status()).toBe(200);
+        const body = await res.json();
+        expect(body.message).toMatch(/running/i);
+        console.log('✅ Backend root health check OK');
+    });
+
+    test('GET /api/issues returns success with array of data', async ({ request }) => {
+        const res = await request.get(`${API}/api/issues`);
+        expect(res.status()).toBe(200);
+        const body = await res.json();
         expect(body.success).toBe(true);
         expect(Array.isArray(body.data)).toBe(true);
         console.log(`✅ GET /api/issues returned ${body.data.length} issues`);
     });
 
-    test('POST /api/auth/register with incomplete data returns error', async ({ request }) => {
-        const response = await request.post('http://127.0.0.1:5000/api/auth/register', {
-            data: { email: 'bad-email', password: '123' },
+    test('POST /api/auth/register with incomplete data returns 400', async ({ request }) => {
+        const res = await request.post(`${API}/api/auth/register`, {
+            data: { email: 'bad' },
         });
-        expect(response.status()).not.toBe(200);
-        const body = await response.json();
+        expect(res.status()).not.toBe(200);
+        const body = await res.json();
         expect(body.success).toBe(false);
-        console.log('✅ Invalid registration correctly rejected by API');
+        console.log('✅ Incomplete register rejected');
     });
 
     test('POST /api/auth/login with wrong credentials returns 401', async ({ request }) => {
-        const response = await request.post('http://127.0.0.1:5000/api/auth/login', {
+        const res = await request.post(`${API}/api/auth/login`, {
             data: { email: 'nobody@fake.com', password: 'wrongpass' },
         });
-        expect(response.status()).toBe(401);
-        const body = await response.json();
+        expect(res.status()).toBe(401);
+        const body = await res.json();
         expect(body.success).toBe(false);
-        console.log('✅ Invalid login correctly returns 401');
+        console.log('✅ Invalid login returns 401');
+    });
+
+    test('GET /api/auth/me without token returns 401', async ({ request }) => {
+        const res = await request.get(`${API}/api/auth/me`);
+        expect(res.status()).toBe(401);
+        console.log('✅ getMe without token returns 401');
+    });
+
+    test('POST /api/issues without auth token returns 401', async ({ request }) => {
+        const res = await request.post(`${API}/api/issues`, {
+            data: { title: 'Unauthorized test', description: 'Should fail', location: {} },
+        });
+        expect(res.status()).toBe(401);
+        console.log('✅ Create issue without auth returns 401');
     });
 });
