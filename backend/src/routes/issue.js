@@ -27,7 +27,7 @@ router
 router
     .route('/:id')
     .get(getIssue)
-    .put(protect, authorize('citizen', 'ngo', 'admin'), updateIssue)
+    .put(protect, authorize('citizen', 'volunteer', 'ngo', 'admin'), updateIssue)
     .delete(protect, authorize('citizen', 'admin'), deleteIssue);
 
 router

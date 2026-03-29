@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - CommunityConnect</title>
+    <title>Admin Dashboard - CommuniFix</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../../css/style.css">
@@ -13,11 +13,10 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
-            <a class="navbar-brand" href="../../index.html"><i class="bi bi-hand-thumbs-up-fill"></i>
-                CommunityConnect</a>
+            CommuniFix</a>
             <div class="navbar-nav ms-auto">
                 <span class="nav-link text-white"><i class="bi bi-shield-check"></i> Admin Panel</span>
-                <a class="nav-link" href="../public/login.html">Logout</a>
+                <a class="nav-link" href="#" onclick="handleLogout()">Logout</a>
             </div>
         </div>
     </nav>
@@ -44,7 +43,7 @@
                         <div class="stat-card">
                             <div class="stat-icon bg-primary bg-opacity-10"><i class="bi bi-people text-primary"></i>
                             </div>
-                            <div class="stat-value">1,847</div>
+                            <div class="stat-value" id="statTotalUsers">...</div>
                             <div class="stat-label">Total Users</div>
                         </div>
                     </div>
@@ -52,7 +51,7 @@
                         <div class="stat-card">
                             <div class="stat-icon bg-warning bg-opacity-10"><i
                                     class="bi bi-exclamation-triangle text-warning"></i></div>
-                            <div class="stat-value">342</div>
+                            <div class="stat-value" id="statActiveIssues">...</div>
                             <div class="stat-label">Active Issues</div>
                         </div>
                     </div>
@@ -152,7 +151,7 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0"><i class="bi bi-people me-2"></i>User Management</h5>
-                            <button class="btn btn-primary btn-sm">Add New User</button>
+                            <button class="btn btn-primary btn-sm" onclick="addNewUser()">Add New User</button>
                         </div>
                     </div>
                     <div class="card-body p-0">
@@ -306,4 +305,58 @@
                                 <p class="mb-1 text-muted">Green City NGO verified issue #2501</p>
                             </div>
                             <div class="list-group-item">
-                                <div class="d-flex w-100 just
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Issue resolved</h6>
+                                    <small>5 hours ago</small>
+                                </div>
+                                <p class="mb-1 text-muted">Issue #2490 marked as resolved by volunteer team</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="../../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+        if (!token || !user || user.role !== 'admin') {
+            window.location.href = '../public/login.html';
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../public/login.html';
+        }
+
+        // Load live issue count from API
+        async function loadStats() {
+            try {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/api/issues`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const issues = data.data;
+                    const active = issues.filter(i => i.status !== 'resolved').length;
+                    document.getElementById('statActiveIssues').textContent = active;
+                    document.getElementById('statTotalUsers').textContent = '—'; // Would need a /api/users endpoint
+                }
+            } catch (e) { console.error('Admin stat load failed', e); }
+        }
+        document.addEventListener('DOMContentLoaded', loadStats);
+
+        function addNewUser() { alert('ℹ️ Add New User\n\nIn a full deployment, this would open a form to create a new managed user account.'); }
+        function editUser(id) { alert(`✏️ Edit User #${id}\n\nIn a full deployment this would open a user profile editor.`); }
+        function suspendUser(id) { alert(`⚠️ Suspend User #${id}\n\nIn a full deployment this would disable the user account.`); }
+        function viewIssue(id) { alert(`📋 View Issue #${id}\n\nIn a full deployment this would open the full issue detail page.`); }
+        function flagIssue(id) { alert(`🚩 Flag Issue #${id}\n\nIn a full deployment this would mark the issue for review.`); }
+    </script>
+</body>
+
+</html>

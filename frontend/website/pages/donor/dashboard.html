@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donor Dashboard - CommunityConnect</title>
+    <title>Donor Dashboard - CommuniFix</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../../css/style.css">
@@ -14,10 +14,11 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
             <a class="navbar-brand" href="../../index.html"><i class="bi bi-hand-thumbs-up-fill"></i>
-                CommunityConnect</a>
+                CommuniFix</a>
             <div class="navbar-nav ms-auto">
-                <span class="nav-link text-white"><i class="bi bi-heart-fill"></i> Jane Donor</span>
-                <a class="nav-link" href="../public/login.html">Logout</a>
+                <span class="nav-link text-white"><i class="bi bi-heart-fill"></i> <span
+                        id="userNameDisplay">Donor</span></span>
+                <a class="nav-link" href="#" onclick="handleLogout()">Logout</a>
             </div>
         </div>
     </nav>
@@ -203,52 +204,67 @@
                         <p class="lead mb-4">Continue making a difference in your community</p>
                         <div class="row g-4">
                             <div class="col-md-4">
-                                <div class="card text-center h-100 border-primary">
+                                <div class="card text-center h-100 border-primary donate-card"
+                                    data-category="Infrastructure">
                                     <div class="card-body">
                                         <i class="bi bi-hammer display-4 text-primary mb-3"></i>
                                         <h5>Infrastructure</h5>
                                         <p class="text-muted">Support road repairs, lighting, and utilities</p>
                                         <div class="btn-group mb-3" role="group">
-                                            <button class="btn btn-outline-primary">$50</button>
-                                            <button class="btn btn-outline-primary">$100</button>
-                                            <button class="btn btn-outline-primary">$250</button>
+                                            <button class="btn btn-outline-primary amount-btn"
+                                                data-amount="50">$50</button>
+                                            <button class="btn btn-outline-primary amount-btn"
+                                                data-amount="100">$100</button>
+                                            <button class="btn btn-outline-primary amount-btn active"
+                                                data-amount="250">$250</button>
                                         </div>
                                         <div class="d-grid">
-                                            <button class="btn btn-primary">Donate Now</button>
+                                            <button class="btn btn-primary"
+                                                onclick="donate('Infrastructure', 250)">Donate Now</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card text-center h-100 border-success">
+                                <div class="card text-center h-100 border-success donate-card"
+                                    data-category="Environment">
                                     <div class="card-body">
                                         <i class="bi bi-tree display-4 text-success mb-3"></i>
                                         <h5>Environment</h5>
                                         <p class="text-muted">Fund cleanup drives and green initiatives</p>
                                         <div class="btn-group mb-3" role="group">
-                                            <button class="btn btn-outline-success">$50</button>
-                                            <button class="btn btn-outline-success">$100</button>
-                                            <button class="btn btn-outline-success">$250</button>
+                                            <button class="btn btn-outline-success amount-btn"
+                                                data-amount="50">$50</button>
+                                            <button class="btn btn-outline-success amount-btn active"
+                                                data-amount="100">$100</button>
+                                            <button class="btn btn-outline-success amount-btn"
+                                                data-amount="250">$250</button>
                                         </div>
                                         <div class="d-grid">
-                                            <button class="btn btn-success">Donate Now</button>
+                                            <button class="btn btn-success" onclick="donate('Environment', 100)">Donate
+                                                Now</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card text-center h-100 border-info">
+                                <div class="card text-center h-100 border-info donate-card"
+                                    data-category="Water & Sanitation">
                                     <div class="card-body">
                                         <i class="bi bi-droplet display-4 text-info mb-3"></i>
                                         <h5>Water & Sanitation</h5>
                                         <p class="text-muted">Provide clean water and sanitation</p>
                                         <div class="btn-group mb-3" role="group">
-                                            <button class="btn btn-outline-info">$50</button>
-                                            <button class="btn btn-outline-info">$100</button>
-                                            <button class="btn btn-outline-info">$250</button>
+                                            <button class="btn btn-outline-info amount-btn"
+                                                data-amount="50">$50</button>
+                                            <button class="btn btn-outline-info amount-btn active"
+                                                data-amount="100">$100</button>
+                                            <button class="btn btn-outline-info amount-btn"
+                                                data-amount="250">$250</button>
                                         </div>
                                         <div class="d-grid">
-                                            <button class="btn btn-info">Donate Now</button>
+                                            <button class="btn btn-info"
+                                                onclick="donate('Water & Sanitation', 100)">Donate Now</button>
                                         </div>
                                     </div>
                                 </div>
@@ -259,7 +275,44 @@
             </div>
         </div>
     </div>
+    <script src="../../js/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+        if (!token || !user) {
+            window.location.href = '../public/login.html';
+        } else {
+            document.getElementById('userNameDisplay').textContent = user.name;
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../public/login.html';
+        }
+
+        // Donate amount selection - highlight selected amount
+        const donateCards = document.querySelectorAll('.donate-card');
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Deselect siblings in same group
+                this.closest('.btn-group').querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active', 'btn-primary', 'btn-success', 'btn-info'));
+                this.classList.add('active');
+                // Store selected amount on the card
+                const card = this.closest('.card');
+                card.dataset.selectedAmount = this.dataset.amount;
+            });
+        });
+
+        function donate(category, defaultAmount) {
+            const card = document.querySelector(`.donate-card[data-category="${category}"]`);
+            const amount = card?.dataset.selectedAmount || defaultAmount;
+            const msg = `Thank you for your generous donation of $${amount} to the ${category} fund!\n\nIn a real deployment this would redirect to a payment gateway. Your commitment makes a difference! 💚`;
+            alert(msg);
+        }
+    </script>
 </body>
 
 </html>
