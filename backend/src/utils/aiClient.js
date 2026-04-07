@@ -49,17 +49,33 @@ exports.analyzeIssueText = async (description) => {
             }
         );
 
-        const aiResult = JSON.parse(response.data.choices[0].message.content);
+        const content = response.data.choices[0]?.message?.content;
+        if (!content) {
+            throw new Error('Empty response from Groq API');
+        }
+
+        let aiResult;
+        if (typeof content === 'string') {
+            try {
+                aiResult = JSON.parse(content);
+            } catch (pErr) {
+                console.error('Failed to parse AI JSON:', content);
+                throw new Error('AI response is not valid JSON');
+            }
+        } else {
+            aiResult = content;
+        }
 
         // Validate result has required fields
-        if (aiResult.predictedCategory && aiResult.severity) {
+        if (aiResult && (aiResult.predictedCategory || aiResult.category) && aiResult.severity) {
             return {
-                predictedCategory: aiResult.predictedCategory,
+                predictedCategory: aiResult.predictedCategory || aiResult.category,
                 severity: aiResult.severity,
                 confidenceScore: aiResult.confidenceScore || 0.90
             };
         }
 
+        console.warn('AI Response missing fields:', aiResult);
         throw new Error('Invalid AI response format');
 
     } catch (error) {
