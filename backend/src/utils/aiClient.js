@@ -1,27 +1,73 @@
 const axios = require('axios');
 
 /**
- * Service to call the AI Python microservice for classification and severity detection
- * If the microservice is down or not configured, it will fallback to rule-based mocking
+ * Service to call the Groq AI API for classification and severity detection
+ * If the API is down or not configured, it will fallback to rule-based mocking
  */
 exports.analyzeIssueText = async (description) => {
     try {
-        const aiUrl = process.env.AI_SERVICE_URL;
+        const apiKey = process.env.GROQ_API_KEY;
 
-        if (aiUrl) {
-            // Attempt to call the real AI microservice
-            const response = await axios.post(`${aiUrl}/analyze`, { text: description }, { timeout: 3000 });
-            return response.data; // Example expected: { predictedCategory: 'environment', severity: 'high', confidenceScore: 0.92 }
-        } else {
-            // No URL defined, throw to trigger fallback mock
-            throw new Error('AI Service not configured');
+        if (!apiKey) {
+            throw new Error('Groq API Key not configured');
         }
+
+        // Call Groq API (OpenAI compatible)
+        const response = await axios.post(
+            'https://api.groq.com/openai/v1/chat/completions',
+            {
+                model: 'llama-3.3-70b-versatile',
+                messages: [
+                    {
+                        role: 'system',
+                        content: `You are an AI assistant for a civic issue reporting platform. 
+                        Analyze the issue description and provide classification in JSON format.
+                        
+                        Categories: [infrastructure, sanitation, environment, public_safety, other]
+                        Severities: [critical, high, medium, low]
+                        
+                        Example Response:
+                        {
+                            "predictedCategory": "infrastructure",
+                            "severity": "high",
+                            "confidenceScore": 0.95
+                        }`
+                    },
+                    {
+                        role: 'user',
+                        content: `Analyze this issue: "${description}"`
+                    }
+                ],
+                response_format: { type: 'json_object' }
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                timeout: 10000
+            }
+        );
+
+        const aiResult = JSON.parse(response.data.choices[0].message.content);
+
+        // Validate result has required fields
+        if (aiResult.predictedCategory && aiResult.severity) {
+            return {
+                predictedCategory: aiResult.predictedCategory,
+                severity: aiResult.severity,
+                confidenceScore: aiResult.confidenceScore || 0.90
+            };
+        }
+
+        throw new Error('Invalid AI response format');
+
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {
-            console.log(`🤖 Falling back to AI Mock System. Reason: ${error.message}`);
+            console.log(`🤖 AI Service Error. Falling back to Mock. Reason: ${error.message}`);
         }
 
-        // --- VERY BASIC NLP MOCKING FALLBACK ---
+        // --- VERY BASIC NLP MOCKING FALLBACK (Ensures system stays functional) ---
         const text = description.toLowerCase();
         let predictedCategory = 'other';
         let severity = 'low';
@@ -48,11 +94,10 @@ exports.analyzeIssueText = async (description) => {
             severity = 'medium'; // Default fallback
         }
 
-        // Mock Response to match Issue schema
         return {
             predictedCategory,
             severity,
-            confidenceScore: parseFloat((Math.random() * (0.95 - 0.70) + 0.70).toFixed(2)) // random score between 70% and 95%
+            confidenceScore: parseFloat((Math.random() * (0.95 - 0.70) + 0.70).toFixed(2))
         };
     }
 };
