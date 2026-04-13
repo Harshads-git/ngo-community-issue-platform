@@ -200,8 +200,8 @@ exports.deleteIssue = async (req, res) => {
             return res.status(404).json({ success: false, message: `Issue not found with id of ${req.params.id}` });
         }
 
-        // Make sure user is issue owner OR is an admin
-        if (issue.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        // Make sure user is issue owner OR is an admin OR is an NGO (reject = permanent delete)
+        if (issue.user.toString() !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'ngo') {
             return res.status(401).json({ success: false, message: `User ${req.user.id} is not authorized to delete this issue` });
         }
 

@@ -141,6 +141,8 @@
                                 <option value="sanitation">Sanitation</option>
                                 <option value="environment">Environment</option>
                                 <option value="public_safety">Public Safety</option>
+                                <option value="health">Health</option>
+                                <option value="education">Education</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
@@ -149,10 +151,32 @@
                             <textarea id="issueDescription" class="form-control" rows="4"
                                 placeholder="Provide detailed description of the issue" required></textarea>
                         </div>
+                        <!-- Structured Location Fields -->
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Location</label>
+                            <label class="form-label fw-semibold">Address / Landmark</label>
                             <input type="text" id="issueLocation" class="form-control"
-                                placeholder="Enter address or location" required>
+                                placeholder="Street address or landmark" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">City</label>
+                                <input type="text" id="issueCity" class="form-control" placeholder="City">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">State</label>
+                                <input type="text" id="issueState" class="form-control" placeholder="State">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Pincode</label>
+                                <input type="text" id="issuePincode" class="form-control" placeholder="Pincode">
+                            </div>
+                        </div>
+                        <!-- Tags (optional) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tags <small class="text-muted">(comma separated,
+                                    optional)</small></label>
+                            <input type="text" id="issueTags" class="form-control"
+                                placeholder="e.g. pothole, road, urgent">
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Upload Images (Optional)</label>
@@ -337,11 +361,22 @@
             btn.innerHTML = 'Submitting... <span class="spinner-border spinner-border-sm"></span>';
             alertBox.classList.add('d-none');
 
+            const tagsRaw = document.getElementById('issueTags').value;
+            const tagsArray = tagsRaw
+                ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean)
+                : [];
+
             const payload = {
                 title: document.getElementById('issueTitle').value,
                 category: document.getElementById('issueCategory').value,
                 description: document.getElementById('issueDescription').value,
-                location: { address: document.getElementById('issueLocation').value }
+                location: {
+                    address: document.getElementById('issueLocation').value,
+                    city: document.getElementById('issueCity').value || '',
+                    state: document.getElementById('issueState').value || '',
+                    pincode: document.getElementById('issuePincode').value || ''
+                },
+                tags: tagsArray
             };
 
             try {

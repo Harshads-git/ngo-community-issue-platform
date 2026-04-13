@@ -17,23 +17,31 @@ const issueSchema = new mongoose.Schema({
         required: [true, 'Please specify an issue category'],
         enum: ['infrastructure', 'sanitation', 'environment', 'public_safety', 'health', 'education', 'other']
     },
+
+    // --- Structured location object (replaces plain string) ---
     location: {
         address: {
             type: String,
             required: [true, 'Please provide an address']
         },
-        // GeoJSON Point format for future map integration
+        city: { type: String, default: '' },
+        state: { type: String, default: '' },
+        pincode: { type: String, default: '' },
+        // GeoJSON Point — enables future map/geo queries
         coordinates: {
             type: {
                 type: String,
                 enum: ['Point'],
+                default: 'Point'
             },
             coordinates: {
-                type: [Number],
+                type: [Number],  // [longitude, latitude]
+                default: [0, 0],
                 index: '2dsphere'
             }
         }
     },
+
     status: {
         type: String,
         enum: ['reported', 'verified', 'in_progress', 'resolved', 'rejected', 'dismissed'],
@@ -44,14 +52,40 @@ const issueSchema = new mongoose.Schema({
         enum: ['low', 'medium', 'high', 'critical'],
         default: 'medium'
     },
+
+    // --- AI Classification (structured sub-document) ---
     aiClassification: {
         predictedCategory: String,
         confidenceScore: Number,
         isFlagged: {
             type: Boolean,
             default: false
+        },
+        keywords: {
+            type: [String],  // array of keywords extracted by AI
+            default: []
         }
     },
+
+    // --- Tags / Labels (array of strings) ---
+    tags: {
+        type: [String],
+        default: []
+    },
+
+    // --- Affected areas (array of location strings) ---
+    affectedAreas: {
+        type: [String],
+        default: []
+    },
+
+    // --- Contact info (structured object, not plain string) ---
+    contactInfo: {
+        name: { type: String, default: '' },
+        phone: { type: String, default: '' },
+        email: { type: String, default: '' }
+    },
+
     images: {
         type: [String], // Array of image URLs/paths
         validate: [arrayLimit, 'Exceeds the limit of 5 images']

@@ -248,6 +248,11 @@
                     ? `<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle"></i> Low AI Confidence</span>`
                     : '';
 
+                // Tags array support
+                const tagsHtml = (issue.tags && issue.tags.length > 0)
+                    ? issue.tags.map(t => `<span class="badge bg-light text-dark border me-1">${t}</span>`).join('')
+                    : '';
+
                 list.innerHTML += `
                     <div class="card border-start ${borderClass} border-4 mb-3" id="issueCard-${issue._id}">
                         <div class="card-body">
@@ -257,8 +262,10 @@
                                     <p class="text-muted">${issue.description}</p>
                                     <div class="mb-2">
                                         <span class="badge bg-info me-2">${issue.location?.address || 'Unknown'}</span>
+                                        ${issue.location?.city ? `<span class="badge bg-secondary me-1">${issue.location.city}</span>` : ''}
                                         <span class="badge bg-secondary">${date}</span>
                                     </div>
+                                    ${tagsHtml ? `<div class="mb-2">${tagsHtml}</div>` : ''}
                                     <div class="alert alert-info mb-0">
                                         <strong><i class="bi bi-cpu me-2"></i>AI Classification:</strong> ${aiWarningHtml}
                                         <div class="mt-2">
@@ -277,8 +284,8 @@
                                         <button class="btn btn-outline-primary" onclick="updateIssueStatus('${issue._id}','resolved')">
                                             <i class="bi bi-check-circle me-2"></i>Resolve Issue
                                         </button>
-                                        <button class="btn btn-outline-danger" onclick="updateIssueStatus('${issue._id}','rejected')">
-                                            <i class="bi bi-x-circle me-2"></i>Reject
+                                        <button class="btn btn-outline-danger" onclick="rejectAndDeleteIssue('${issue._id}', '${issue.title.replace(/'/g, "\\'")}')">
+                                            <i class="bi bi-trash me-2"></i>Reject &amp; Delete
                                         </button>
                                     </div>
                                 </div>
@@ -311,6 +318,32 @@
             } catch (err) {
                 console.error('Error updating status:', err);
                 alert('An error occurred while updating the status.');
+            }
+        }
+
+        async function rejectAndDeleteIssue(issueId, issueTitle) {
+            const confirmed = confirm(`⚠️ Reject & Permanently Delete Issue?\n\n"${issueTitle}"\n\nThis will permanently remove the issue from the database. This action cannot be undone.`);
+            if (!confirmed) return;
+
+            try {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/api/issues/${issueId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    const card = document.getElementById(`issueCard-${issueId}`);
+                    if (card) {
+                        card.style.transition = 'opacity 0.4s';
+                        card.style.opacity = '0';
+                    }
+                    setTimeout(() => fetchDashboardData(), 500);
+                } else {
+                    alert(data.message || 'Failed to delete the issue.');
+                }
+            } catch (err) {
+                console.error('Error deleting issue:', err);
+                alert('An error occurred while deleting the issue.');
             }
         }
     </script>
